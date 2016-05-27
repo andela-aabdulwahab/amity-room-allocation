@@ -6,12 +6,14 @@ currentdir = os.path.dirname(os.path.abspath(inspect. \
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
+from pprint import pprint
 from app.amity import Amity
 from app.fellow import Fellow
 from app.livingroom import LivingRoom
 from app.office import Office
 from app.roomallocation import RoomAllocation
 from app.staff import Staff
+from app.allocation_db import AllocationDb
 
 
 class TestRoomAllocation(unittest.TestCase):
@@ -130,25 +132,65 @@ class TestRoomAllocation(unittest.TestCase):
         expected_string += "MALIK WAHAB FELLOW Y\n"
         self.assertEqual(room_string, expected_string)
 
-    def test_print_room_two(self):
-        room = self.personB.get_allocation('office')
-        room_string = self.roomallocation.print_room(room)
-        room_obj = self.roomallocation.amity.get_room(room)
-        room_name = room_obj.get_name()
-        if isinstance(room_obj, Office):
-            room_type = 'Office'
-        else:
-            room_type = 'Living Room'
-        expected_string = "\n--"+room_name+"("+room_type+")--\n"
-        expected_string += "JOE JACK STAFF \n"
-        self.assertEqual(room_string, expected_string)
-
     def test_build_allocation_string(self):
         allocation_string = self.roomallocation.build_allocation_string()
+        rooms = self.roomallocation.amity.get_rooms()
+        expected_string = ""
+        for room_id in rooms:
+            expected_string += self.roomallocation.print_room(room_id)
+        self.assertEqual(allocation_string, expected_string)
 
+    def test_build_unallocated_string(self):
+        self.roomallocation.remove_room('spata')
+        unallocated_string = self.roomallocation.build_unallocation_string()
+        expected_string = "  --Unallocated for Office-- \n\n"
+        expected_string += "\n \n --Unallocated for LivingRoom-- \n\n"
+        expected_string += "MALIK WAHAB FELLOW Y\n"
+        self.assertEqual(unallocated_string, expected_string)
 
     def test_print_allocation_to_file(self):
-        pass
+        self.roomallocation.print_allocation_to_file("test/test_allocation_to_file.txt")
+        rooms = self.roomallocation.amity.get_rooms()
+        expected_string = ""
+        for room_id in rooms:
+            expected_string += self.roomallocation.print_room(room_id)
+        allocation_string_from_file = ""
+        with open("test/test_allocation_to_file.txt", 'r') as allocation_line:
+            allocation_string_from_file += allocation_line.read()
+        os.remove("test/test_allocation_to_file.txt")
+        self.assertEqual(allocation_string_from_file, expected_string)
+
 
     def test_print_unallocated_to_file(self):
-        pass
+        self.roomallocation.remove_room('spata')
+        self.roomallocation.print_unallocated_to_file('test/test_unallocated_to_file.txt')
+        unallocated_string = self.roomallocation.build_unallocation_string()
+        expected_string = "  --Unallocated for Office-- \n\n"
+        expected_string += "\n \n --Unallocated for LivingRoom-- \n\n"
+        expected_string += "MALIK WAHAB FELLOW Y\n"
+        with open("test/test_unallocated_to_file.txt", 'r') as allocation_line:
+            unallocated_string_from_file = allocation_line.read()
+        os.remove('test/test_unallocated_to_file.txt')
+        self.assertEqual(expected_string, unallocated_string_from_file)
+
+    def test_save_to_database(self):
+        db = AllocationDb('test/test_save.db')
+        self.roomallocation.save_to_database(db)
+        rooms = db.get_rooms()
+        os.remove('test/test_save.db')
+        self.assertIn('spata', rooms)
+
+    def test_save_to_database_two(self):
+        db = AllocationDb('test/test_save.db')
+        self.roomallocation.save_to_database(db)
+        persons = db.get_persons()
+        os.remove('test/test_save.db')
+        self.assertIn('malikwahab', persons)
+
+    def test_load_from_database(self):
+        db = AllocationDb('test/test_save.db')
+        self.roomallocation.save_to_database(db)
+        self.roomallocation.remove_person('malikwahab')
+        self.roomallocation.remove_room('spata')
+        self.roomallocation.load_from_database(db)
+        self.assertIn('malikwahab', self.roomallocation.amity.get_persons())
