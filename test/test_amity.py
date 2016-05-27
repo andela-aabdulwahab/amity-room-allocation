@@ -27,6 +27,9 @@ class TestAmity(unittest.TestCase):
         self.amity = Amity()
         self.amity.add_room(self.livingB)
 
+    def test_init(self):
+        amity = Amity()
+        self.assertEqual(amity.rooms, {})
     def test_add_room(self):
         self.amity.add_room(self.livingA)
         self.assertIn("spata", self.amity.rooms)
@@ -34,7 +37,7 @@ class TestAmity(unittest.TestCase):
     def test_get_room(self):
         self.assertEqual(self.amity.get_room("roses"), self.livingB)
 
-    def test_get_room_all(self):
+    def test_get_rooms(self):
         self.amity.add_room(self.livingA)
         room_dict = {'roses': self.livingB, 'spata': self.livingA}
         self.assertEqual(self.amity.get_rooms(), room_dict)
@@ -48,6 +51,10 @@ class TestAmity(unittest.TestCase):
         self.amity.add_room(self.officeB)
         person_dict = {"malikwahab": self.fellowA, "oseoko": self.fellowB, "joejack": self.staffA, "nengiadoki": self.staffB}
         self.assertEqual(person_dict, self.amity.get_persons())
+
+    def test_get_person(self):
+        self.amity.add_person(self.fellowA)
+        self.assertEqual(self.amity.get_person('malikwahab'), self.fellowA)
 
     def test_get_offices(self):
         self.amity.add_room(self.officeA)
@@ -77,3 +84,16 @@ class TestAmity(unittest.TestCase):
         person = self.fellowA
         self.amity.add_person(person)
         self.assertIn(person.get_id(), self.amity.persons)
+
+    def test_room_type(self):
+        self.assertEqual(self.amity.room_type(self.livingA), 'livingroom')
+
+    def test_room_type_two(self):
+        self.assertEqual(self.amity.room_type(self.officeA), 'office')
+
+    def test_person_type(self):
+        self.assertEqual(self.amity.person_type(self.fellowA), 'fellow')
+
+    def test_person_type_two(self):
+        self.assertEqual(self.amity.person_type(self.staffB), 'staff')
+
