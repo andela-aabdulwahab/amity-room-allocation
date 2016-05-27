@@ -234,10 +234,10 @@ class RoomAllocation():
                     office_unallocated[person_id] = persons[person_id]
                 elif not persons[person_id].is_allocated('livingroom'):
                     livingroom_unallocated[person_id] = persons[person_id]
+            else:
+                if not persons[person_id].is_allocated("office"):
+                    office_unallocated[person_id] = persons[person_id]
         return [office_unallocated, livingroom_unallocated]
-
-    def allocate_free(self):
-        pass
 
     def print_unallocated_to_file(self, file_name):
         ''' Prints name of unallocated person to file specified
@@ -259,8 +259,6 @@ class RoomAllocation():
         unallocated = self.get_unallocated()
         office_unallocated = unallocated[0]
         livingroom_unallocated = unallocated[1]
-        office_head = " --Unallocated for Office-- \n\n"
-        livingroom_head = "\n \n --Unallocated for LivingRoom-- \n\n"
         unallocated_string = " "
         unallocated_string += " --Unallocated for Office-- \n\n"
         for person_id in office_unallocated:
