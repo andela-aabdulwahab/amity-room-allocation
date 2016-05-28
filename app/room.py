@@ -22,27 +22,18 @@ class Room():
         LivingRoom
         Office
 
-
     """
 
     def __init__(self, name, size):
         """Initialize the class with name and the size
-        arguments
-        name - name of the class
-        size - the size of the class
+        Arguments:
+            name: name of the class
+            size: the size of the class
 
         """
         self.name = name
         self.size = size
         self.occupants = {}
-
-    def get_name(self):
-        """ return the name of room"""
-        return self.name
-
-    def get_size(self):
-        """ return the size of the room """
-        return self.size
 
     def is_full(self):
         """ checks of if the room is filled
@@ -75,12 +66,13 @@ class Room():
 
     def remove_occupant(self, person_obj):
         """ Remove the person object from the occupants of a room
-        arguemnt
-        person_object - an instance of person
+        Arguemnt
+            person_object: an instance of person
 
-        return - status code of the operation
-                 1 - successful
-                 7 - name not in room
+        Return:
+            status code of the operation
+            1 - successful
+            7 - name not in room
         """
         name_key = person_obj.get_id()
         if name_key in self.occupants:
@@ -89,13 +81,10 @@ class Room():
         else:
             return 7
 
-    def get_occupants(self):
-        """return the occupants of the room in dictionary, id, object pair """
-        return self.occupants
-
     def get_id(self):
         """ Create Id for the room using the room name
-        return a string
+        return:
+            A string of the room id
         """
         name_key = self.name.replace(" ", "")
         return name_key.lower()
