@@ -4,32 +4,34 @@ class Room():
     to room
 
     instance Variable
-    name - room name
-    size - the maxumum number of occupants
+        name - room name
+        size - the maxumum number of occupants
 
-    methods:
-    get_name - return the name of the room
-    get_size - return the size of the room
-    is_full - checks the status of the room
-              retuen true if filled
-                     false id other wise
-    add_occupants - add occupants to the room
-    remove_occupants - remove occupant to the room
-    get_occupants - return the occupants of a room in a dictionary
-    get_id - creates id for the room
+    Methods:
+        get_name - return the name of the room
+        get_size - return the size of the room
+        is_full - checks the status of the room
+                  retuen true if filled
+                         false id other wise
+        add_occupants - add occupants to the room
+        remove_occupants - remove occupant to the room
+        get_occupants - return the occupants of a room in a dictionary
+        get_id - creates id for the room
 
-    subclasses
-    LivingRoom
-    Office
+    Subclasses:
+        LivingRoom
+        Office
 
-    __init__
-    Initialize the class with name and the size
-    arguments
-    name - name of the class
-    size - the size of the class
+
     """
 
     def __init__(self, name, size):
+        """Initialize the class with name and the size
+        arguments
+        name - name of the class
+        size - the size of the class
+
+        """
         self.name = name
         self.size = size
         self.occupants = {}
