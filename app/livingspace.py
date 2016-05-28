@@ -1,3 +1,4 @@
+from app.exceptions import PersonNotFellowError, RoomGenderDiffError
 from app.fellow import Fellow
 from app.room import Room
 
@@ -5,8 +6,12 @@ from app.room import Room
 class LivingSpace(Room):
 
     """ object container for living room
-    Inherits
+    Inherits:
         Room
+
+    Raises:
+        PersonNotFellowError
+        RoomGenderDiffError
 
     Attributes:
         gender(str): gender of allowed occupants
@@ -25,22 +30,35 @@ class LivingSpace(Room):
         super().__init__(name, 4)
         self.gender = gender
 
-    def add_occupant(self, person_obj):
+    def get_occupants(self):
+        """ getter class for the occupants
+
+        Returns:
+            _occupants
+        """
+        return self._occupants
+
+    def add_occupants(self, person_obj):
         """ override the Room add_occupant
         determining if is a fellow or gender
+
+        Raises:
+            PersonNotFellowError
+            RoomGenderDiffError
+            RoomIsFullError
 
         Arguments:
             person: instance person_object
 
         Returns:
+            True
         """
         if not isinstance(person_obj, Fellow):
-            return 5
+            raise PersonNotFellowError()
         elif self.gender != person_obj.gender:
-            return 4
+            raise RoomGenderDiffError("Fellow can't be added to room of " +
+                                      "opposite gender")
         else:
-            return super().add_occupant(person_obj)
+            return super().add_occupants(person_obj)
 
-    def get_gender(self):
-        """ return the gender allowed for room"""
-        return self.gender
+    occupants = property(get_occupants, add_occupants)
