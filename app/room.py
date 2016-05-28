@@ -33,7 +33,7 @@ class Room():
         """
         self.name = name
         self.size = size
-        self.occupants = {}
+        self._occupants = {}
 
     def is_full(self):
         """ checks of if the room is filled
@@ -45,7 +45,7 @@ class Room():
         else:
             return True
 
-    def add_occupant(self, person_obj):
+    def add_occupants(self, person_obj):
         """ adds occupant to the instance dicttionary
         arguments
         person_obj - an instance of Person
@@ -58,11 +58,14 @@ class Room():
         if self.is_full():
             return 2
         name_key = person_obj.get_id()
-        if name_key in self.occupants:
+        if name_key in self._occupants:
             return 3
         else:
-            self.occupants[name_key] = person_obj
+            self._occupants[name_key] = person_obj
             return 1
+
+    def get_occupants(self):
+        return self._occupants
 
     def remove_occupant(self, person_obj):
         """ Remove the person object from the occupants of a room
@@ -88,3 +91,5 @@ class Room():
         """
         name_key = self.name.replace(" ", "")
         return name_key.lower()
+
+    occupants = property(get_occupants, add_occupants)
