@@ -1,4 +1,4 @@
-from app.exception import RoomIsFullError
+from app.exceptions import RoomIsFullError
 
 
 class Room():
@@ -65,28 +65,11 @@ class Room():
         if self.is_full():
             raise RoomIsFullError("Person cannot be add to a full room")
         else:
-            self._occupants[person_obj.person_identifier] = person_obj
+            self._occupants[person_obj.identifier] = person_obj
             return True
 
     def get_occupants(self):
         return self._occupants
-
-    def remove_occupant(self, person_obj):
-        """ Remove the person object from the occupants of a room
-        Arguemnt
-            person_object: an instance of person
-
-        Return:
-            status code of the operation
-            1 - successful
-            7 - name not in room
-        """
-        name_key = person_obj.get_id()
-        if name_key in self.occupants:
-            del self.occupants[name_key]
-            return 1
-        else:
-            return True
 
     def get_id(self):
         """ Create Id for the room using the room name
