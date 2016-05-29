@@ -1,4 +1,4 @@
-from app.exceptions import RoomIsFullError
+from app.exceptions import PersonInRoomError, RoomIsFullError
 
 
 class Room():
@@ -6,20 +6,9 @@ class Room():
     save the room information and also has functions to add person
     to room
 
-    instance Variable
+    Attibutes:
         name - room name
         size - the maxumum number of occupants
-
-    Methods:
-        get_name - return the name of the room
-        get_size - return the size of the room
-        is_full - checks the status of the room
-                  retuen true if filled
-                         false id other wise
-        add_occupants - add occupants to the room
-        remove_occupants - remove occupant to the room
-        get_occupants - return the occupants of a room in a dictionary
-        get_id - creates id for the room
 
     Subclasses:
         LivingRoom
@@ -46,7 +35,7 @@ class Room():
             True if occupancy exceeded False otherwise
 
         """
-        if len(self.occupants) < self.size:
+        if len(self._occupants) < self.size:
             return False
         else:
             return True
@@ -58,12 +47,15 @@ class Room():
 
         Raises:
             RoomIsFullError : When room is full
+            PersonInRoomError: When person objec already in room
 
         returns:
            True on success
         """
         if self.is_full():
             raise RoomIsFullError("Person cannot be add to a full room")
+        elif person_obj.identifier in self.occupants:
+            raise PersonInRoomError("Person Object already in room")
         else:
             self._occupants[person_obj.identifier] = person_obj
             return True
@@ -74,7 +66,7 @@ class Room():
     def get_id(self):
         """ Create Id for the room using the room name
         return:
-            A string of the room id
+            room_id: represent room Id
         """
         name_key = self.name.replace(" ", "")
         return name_key.lower()

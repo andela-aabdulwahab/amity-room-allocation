@@ -21,3 +21,8 @@ class PersonNotFellowError(Error):
 class RoomGenderDiffError(Error):
     """Raise when room and person Gender don't match"""
     pass
+
+
+class PersonInRoomError(Error):
+    """Person already in Room"""
+    pass

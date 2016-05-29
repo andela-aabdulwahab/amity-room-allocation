@@ -1,5 +1,6 @@
 import unittest
 
+from app.exceptions import PersonInRoomError, RoomIsFullError
 from app.person import Person
 from app.room import Room
 
@@ -28,31 +29,29 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(self.mars.occupants, {})
 
     def test_add_occupant(self):
-        self.mars.add_occupant(self.personA)
-        self.assertEqual(self.mars.occupants["malikwahab"], self.personA)
+        self.mars.add_occupants(self.personA)
+        key = self.personA.identifier
+        self.assertEqual(self.mars.occupants[key], self.personA)
 
     def test_add_occupant_exist(self):
-        self.mars.add_occupant(self.personA)
-        self.assertEqual(self.mars.add_occupant(self.personA), 3)
-
-    def test_remove_occupant(self):
-        self.mars.add_occupant(self.personD)
-        self.mars.remove_occupant(self.personD)
-        self.assertNotIn("oseoko", self.mars.occupants)
+        self.mars.occupants = self.personA
+        with self.assertRaises(PersonInRoomError):
+            self.mars.occupants = self.personA
 
     def test_is_full(self):
-        self.pluto.add_occupant(self.personA)
-        self.pluto.add_occupant(self.personB)
-        self.pluto.add_occupant(self.personC)
-        self.pluto.add_occupant(self.personD)
+        self.pluto.occupants = self.personA
+        self.pluto.occupants = self.personB
+        self.pluto.occupants = self.personC
+        self.pluto.occupants = self.personD
         self.assertTrue(self.pluto.is_full())
 
     def test_add_occupant_when_full(self):
-        self.pluto.add_occupant(self.personA)
-        self.pluto.add_occupant(self.personB)
-        self.pluto.add_occupant(self.personC)
-        self.pluto.add_occupant(self.personD)
-        self.assertEqual(self.pluto.add_occupant(self.personE), 2)
+        self.pluto.occupants = self.personA
+        self.pluto.occupants = self.personB
+        self.pluto.occupants = self.personC
+        self.pluto.occupants = self.personD
+        with self.assertRaises(RoomIsFullError):
+            self.pluto.occupants = self.personE
 
     def test_get_id(self):
         self.assertEqual(self.pluto.get_id(), "pluto")
