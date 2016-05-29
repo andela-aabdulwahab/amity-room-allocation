@@ -9,10 +9,6 @@ class LivingSpace(Room):
     Inherits:
         Room
 
-    Raises:
-        PersonNotFellowError
-        RoomGenderDiffError
-
     Attributes:
         gender(str): gender of allowed occupants
 

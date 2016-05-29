@@ -1,6 +1,6 @@
 import unittest
 
-from app.exceptions import PersonNotFellowError
+from app.exceptions import PersonNotFellowError, RoomGenderDiffError
 from app.fellow import Fellow
 from app.livingspace import LivingSpace
 from app.room import Room
@@ -29,3 +29,12 @@ class TestLivingRoom(unittest.TestCase):
     def test_add_occupants(self):
         with self.assertRaises(PersonNotFellowError):
             self.spata.occupants = self.personC
+
+    def test_add_occupants_two(self):
+        with self.assertRaises(RoomGenderDiffError):
+            self.spata.occupants = self.personB
+
+    def test_add_occupants_three(self):
+        self.spata.occupants = self.personA
+        key = self.personA.identifier
+        self.assertIn(key, self.spata.occupants)
