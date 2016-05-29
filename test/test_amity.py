@@ -29,6 +29,10 @@ class TestAmity(unittest.TestCase):
         self.amity.rooms = self.livingA
         self.assertIn("spata", self.amity.rooms)
 
+    def test_add_room_two(self):
+        with self.assertRaises(TypeError):
+            self.amity.rooms = "spata"
+
     def test_get_rooms_two(self):
         self.assertEqual(self.amity.rooms.get('roses'), self.livingB)
 
@@ -76,6 +80,10 @@ class TestAmity(unittest.TestCase):
     def test_add_person(self):
         self.amity.persons = self.fellowA
         self.assertIn(self.fellowA.identifier, self.amity.persons)
+
+    def test_add_person_two(self):
+        with self.assertRaises(TypeError):
+            self.amity.persons = "malik wahab"
 
     def test_room_type(self):
         self.assertEqual(self.amity.room_type(self.livingA), 'livingspace')

@@ -1,135 +1,140 @@
-from app.livingroom import LivingRoom
+from app.fellow import Fellow
+from app.livingspace import LivingSpace
 from app.office import Office
+from app.person import Person
+from app.room import Room
+from app.staff import Staff
 
 
 class Amity():
 
-    ''' Serve as the container for persons and rooms
+    """ Serve as the container for persons and rooms
     available.
 
-    instance variable
-    rooms - Dictionary container for all available rooms
-    persons - Dictionary container for all persons
+    Attributes:
+        rooms: Dictionary container for all available rooms
+        persons: Dictionary container for all persons
 
-    add_room - add a room object to the rooms variable
-    add_person - add person to the person variable
-    get_room - return the room with the given id
-    get_rooms - return all rooms
-    get_person - return the person with the given id
-    get_persons - return the all persons
-    get_offices - return rooms of instance Office
-    get_livingroom - return rooms of instance LivingRoom with the given gender
-    get_all_livingroom - return all rooms of instance LivingRoom
-
-    __init__
-    initialize instance variable rooms and person with empty dict
-    arguments:
-    '''
+    """
 
     def __init__(self):
-        self.rooms = {}
-        self.persons = {}
+        """initialize instance variable rooms and person with empty dict"""
+
+        self._rooms = {}
+        self._persons = {}
 
     def add_room(self, room_obj):
-        ''' Add room_obj to the class variable room_obj
-        arguments:
-        room_obj - object of type Room
-        '''
-        self.rooms[room_obj.get_id()] = room_obj
+        """ Property fucntion for _rooms
 
-    def get_room(self, room_key):
-        ''' Return the room of key room_key for the rooms dict
-        argument:
-        room_key
-        '''
-        return self.rooms.get(room_key)
+        Arguments:
+            room_obj: Object of type room
+        """
+        if isinstance(room_obj, Room):
+            self._rooms[room_obj.get_id()] = room_obj
+        else:
+            raise TypeError("Argument passed not of type Room")
 
     def get_rooms(self):
-        ''' Returns all rooms '''
-        return self.rooms
+        """ Property fucntion for _rooms
+
+        Return:
+            _rooms: dictionary for person obj
+        """
+        return self._rooms
 
     def add_person(self, person_obj):
-        ''' Add person_obj to the persons class
-        arguments
-        person_obj - Object of type Person
-        '''
-        self.persons[person_obj.get_id()] = person_obj
+        """ Add person_obj to the persons class
 
-    def get_person(self, person_id):
-        ''' Return the Object with person_id in the persons dict
-
-        arguments
-        person_id - of type person
-        '''
-        return self.persons.get(person_id)
+        Arguments:
+            person_obj: Object of type Person
+        """
+        if isinstance(person_obj, Person):
+            self._persons[person_obj.identifier] = person_obj
+        else:
+            raise TypeError("Argument passed not if type Person")
 
     def get_persons(self):
-        ''' return all persons in the person'''
-        return self.persons
+        """ Property fucntion for _person
+
+        Return:
+            _person: dictionary for person obj
+        """
+        return self._persons
 
     def get_offices(self):
-        ''' Return all room of instance Office '''
-        rooms = self.get_rooms()
+        """ Gets all room of type Office
+
+        Returns:
+            offices: Rooms of type office
+        """
         offices = {}
-        for i in rooms:
-            if isinstance(rooms[i], Office):
-                offices[i] = rooms[i]
+        for i in self._rooms:
+            if isinstance(self._rooms[i], Office):
+                offices[i] = self._rooms[i]
         return offices
 
-    def get_all_livingrooms(self):
-        ''' Return all rooms of instance LivingRoom '''
-        rooms = self.get_rooms()
-        livingrooms = {}
-        for i in rooms:
-            if isinstance(rooms[i], LivingRoom):
-                livingrooms[i] = rooms[i]
-        return livingrooms
+    def get_all_livingspaces(self):
+        """ Get all rooms use checking for instance to
+        select lving room
 
-    def get_livingrooms(self, gender):
-        ''' Return all rooms of instance LivingRoom with gender
-        argument
-        gender - gender of rooms to return
-        '''
-        gender_livingrooms = {}
-        livingrooms = self.get_all_livingrooms()
-        for i in livingrooms:
-            if livingrooms[i].get_gender() == gender:
-                gender_livingrooms[i] = livingrooms[i]
-        return gender_livingrooms
+        Returns:
+            livingspace: Rooms of type LivingSpace
+
+        """
+        livingspaces = {}
+        for i in self._rooms:
+            if isinstance(self._rooms[i], LivingSpace):
+                livingspaces[i] = self._rooms[i]
+        return livingspaces
+
+    def get_livingspaces(self, gender):
+        """Gets all the living sapces in _room
+
+        Arguments:
+            gender: Gender of the room to return
+
+        Returns:
+            gender_livingspaces: Rooms of the gender specify
+        """
+        gender_livingspaces = {}
+        livingspaces = self.get_all_livingspaces()
+        for i in livingspaces:
+            if livingspaces[i].gender == gender:
+                gender_livingspaces[i] = livingspaces[i]
+        return gender_livingspaces
 
     def room_type(self, room_obj):
-        ''' Return the type of a room
+        """ Return the type of a room
 
-        arguments
-        room_obj - room object to check
+        Arguments:
+            room_obj: room object to check
 
-        return
-        "office" if an instance of office
-        "livingroom" if an instance of livingroom
-        None - if niether
-        '''
+        Returns:
+            string of type of room or None if neither
+        """
 
         if isinstance(room_obj, Office):
             return "office"
-        elif isinstance(room_obj, LivingRoom):
-            return "livingroom"
+        elif isinstance(room_obj, LivingSpace):
+            return "livingspace"
         else:
             return None
 
     def person_type(self, person_obj):
-        ''' Return the type of a person
+        """ Return the type of a person
 
-        arguments
-        person_obj - person to check
+        Arguments
+            person_obj: person to check
 
-        return
-        "FELLOW" - if an instance of Fellow
-        "STAFF" - if an instance of Staff
-        "None" - if neither
-        '''
+        Returns
+            String of person type or None if neither
+        """
         if isinstance(person_obj, Fellow):
-            return "FELLOW"
+            return "fellow"
         elif isinstance(person_obj, Staff):
-            return "STAFF"
+            return "staff"
         else:
             return None
+
+    rooms = property(get_rooms, add_room)
+    persons = property(get_persons, add_person)
