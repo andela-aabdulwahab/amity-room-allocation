@@ -6,7 +6,7 @@ from app.staff import Staff
 
 class TestStaff(unittest.TestCase):
     def setUp(self):
-        self.staff_obj = Staff("Joe Jack", "M", "Engineering")
+        self.staff_obj = Staff("Joe Jack", "M")
 
     def test_person_inheritance(self):
         self.assertTrue(issubclass(Staff, Person))
