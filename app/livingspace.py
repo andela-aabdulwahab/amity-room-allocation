@@ -34,7 +34,7 @@ class LivingSpace(Room):
         """
         return self._occupants
 
-    def add_occupants(self, person_obj):
+    def add_occupant(self, person_obj):
         """ override the Room add_occupant
         determining if is a fellow or gender
 
@@ -55,6 +55,6 @@ class LivingSpace(Room):
             raise RoomGenderDiffError("Fellow can't be added to room of " +
                                       "opposite gender")
         else:
-            return super().add_occupants(person_obj)
+            return super().add_occupant(person_obj)
 
-    occupants = property(get_occupants, add_occupants)
+    occupants = property(get_occupants, add_occupant)

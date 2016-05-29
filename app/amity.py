@@ -51,7 +51,7 @@ class Amity():
         if isinstance(person_obj, Person):
             self._persons[person_obj.identifier] = person_obj
         else:
-            raise TypeError("Argument passed not if type Person")
+            raise TypeError("Argument passed not of type Person")
 
     def get_persons(self):
         """ Property fucntion for _person

@@ -11,13 +11,13 @@ class Fellow(Person):
 
     """
 
-    def __init__(self, name, gender, want_accom="N"):
+    def __init__(self, name, gender, wants_accom="N"):
         super().__init__(name, gender)
-        self.want_accom = want_accom
+        self.wants_accom = wants_accom
 
     def wants_accomodation(self):
         """ return value base on the value of want_accom"""
-        if self.want_accom == "Y":
+        if self.wants_accom == "Y":
             return True
         else:
             return False

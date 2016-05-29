@@ -40,7 +40,7 @@ class Room():
         else:
             return True
 
-    def add_occupants(self, person_obj):
+    def add_occupant(self, person_obj):
         """ adds occupant to the instance dicttionary
         arguments
         person_obj - an instance of Person
@@ -58,7 +58,6 @@ class Room():
             raise PersonInRoomError("Person Object already in room")
         else:
             self._occupants[person_obj.identifier] = person_obj
-            return True
 
     def get_occupants(self):
         return self._occupants
@@ -71,4 +70,4 @@ class Room():
         name_key = self.name.replace(" ", "")
         return name_key.lower()
 
-    occupants = property(get_occupants, add_occupants)
+    occupants = property(get_occupants, add_occupant)

@@ -1,86 +1,121 @@
+import inspect, os, sys
 import unittest
-import os, sys, inspect
 
-currentdir = os.path.dirname(os.path.abspath(inspect. \
-    getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
-
-from pprint import pprint
+from app.allocation_db import AllocationDb
 from app.amity import Amity
+from app.exceptions import NoRoomError, PersonAllocatedError
 from app.fellow import Fellow
-from app.livingroom import LivingRoom
+from app.livingspace import LivingSpace
 from app.office import Office
 from app.roomallocation import RoomAllocation
 from app.staff import Staff
-from app.allocation_db import AllocationDb
+
+currentdir = os.path.dirname(os.path.abspath(inspect.
+                             getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
 
 
 class TestRoomAllocation(unittest.TestCase):
 
     def setUp(self):
         amity_obj = Amity()
+        self.personA = Fellow("Malik Wahab", "M", "Y")
+        self.personB = Staff("Joe Jack", "M")
+        amity_obj.persons = self.personA
+        amity_obj.persons = self.personB
         self.roomallocation = RoomAllocation(amity_obj)
-        self.livingA = LivingRoom("Spata", "M")
+        self.livingA = LivingSpace("Spata", "M")
         self.officeB = Office("Trafford")
         self.officeA = Office("Mars")
-        self.personA = Fellow("Malik Wahab", "M", "Y", "D1", "Python")
-        self.personB = Staff("Joe Jack", "M", "Training")
         self.roomallocation.create_room(self.livingA)
         self.roomallocation.create_room(self.officeA)
         self.roomallocation.create_room(self.officeB)
-        self.roomallocation.create_person(self.personA)
-        self.roomallocation.create_person(self.personB)
 
     def test_create_room(self):
         self.roomallocation.create_room(self.livingA)
-        self.assertIn("spata", self.roomallocation.amity.get_rooms())
+        self.assertIn("spata", self.roomallocation.amity.rooms)
+
+    def test_create_person(self):
+        fellow = Fellow("Jose Morinho", "M", "Y")
+        self.roomallocation.create_person(fellow)
+        self.assertTrue(fellow.is_allocated("livingspace"))
+
+    def test_create_person_two(self):
+        fellow = Fellow("Jose Morinho", "M", "Y")
+        self.roomallocation.create_person(fellow)
+        self.assertTrue(fellow.is_allocated("office"))
 
     def test_allocate_office(self):
-        self.roomallocation.allocate_office(self.personB.get_id())
+        self.roomallocation.allocate_office(self.personB.identifier)
         self.assertTrue(self.personB.is_allocated("office"))
 
     def test_allocate_office_two(self):
-        self.roomallocation.allocate_office(self.personB.get_id())
-        self.assertIn(self.personB.get_allocation("office"), ['mars', 'trafford'])
+        self.roomallocation.allocate_office(self.personB.identifier)
+        self.assertIn(self.personB.room_name["office"], ['mars', 'trafford'])
 
-    def test_allocate_office_three(self):
-        self.roomallocation.allocate_office(self.personB.get_id())
-        self.assertIn(self.personB.get_allocation("office"), ['mars', 'trafford', 'spata'])
+    def test_allocate_livingspace(self):
+        self.roomallocation.allocate_livingspace(self.personA.identifier)
+        self.assertTrue(self.personA.is_allocated("livingspace"))
 
-    def test_allocate_livingroom(self):
-        self.roomallocation.allocate_livingroom(self.personA.get_id())
-        self.assertTrue(self.personA.is_allocated("livingroom"))
+    def test_allocate_livingspace_two(self):
+        self.roomallocation.allocate_livingspace(self.personA.identifier)
+        self.assertIn(self.personA.identifier, self.livingA.occupants)
 
-    def test_allocate_livingroom_two(self):
-        self.roomallocation.allocate_livingroom(self.personA.get_id())
-        self.assertIn("malikwahab", self.livingA.get_occupants())
+    def test_allocate_livingspace_three(self):
+        self.roomallocation.allocate_livingspace(self.personA.identifier)
+        self.assertEqual("spata", self.personA.room_name["livingspace"])
 
-    def test_allocate_livingroom_three(self):
-        self.roomallocation.allocate_livingroom(self.personA.get_id())
-        self.assertEqual("spata", self.personA.get_allocation("livingroom"))
+    def test_allocate_livingspace_four(self):
+        with self.assertRaises(KeyError):
+            self.roomallocation.allocate_livingspace("ahmed")
 
-    def test_rellocate_room(self):
-        self.roomallocation.allocate_livingroom(self.personA.get_id())
-        self.roomallocation.allocate_office(self.personA.get_id())
-        self.roomallocation.rellocate_person(self.personA.get_id(), self.officeB.get_id())
-        self.assertEqual("trafford", self.personA.get_allocation("office"))
+    def test_allocate_room(self):
+        with self.assertRaises(NoRoomError):
+            self.roomallocation.allocate_room(self.personA.identifier, {})
+
+    def test_allocate_room_two(self):
+        self.roomallocation.allocate_livingspace(self.personA.identifier)
+        with self.assertRaises(PersonAllocatedError):
+            self.roomallocation.allocate_room(self.personA.identifier,
+                                              {'spata': self.livingA})
+
+    def test_rellocate_person(self):
+        self.roomallocation.allocate_livingspace(self.personA.identifier)
+        self.roomallocation.allocate_office(self.personA.identifier)
+        self.roomallocation.rellocate_person(self.personA.identifier,
+                                             self.officeB.get_id())
+        self.assertEqual("trafford", self.personA.room_name["office"])
+
+    def test_rellocate_person_four(self):
+        with self.assertRaises(KeyError):
+            self.roomallocation.rellocate_person(self.personA.identifier, 'om')
+
+    def test_rellocate_person_two(self):
+        with self.assertRaises(KeyError):
+            self.roomallocation.rellocate_person("malik", 'spata')
 
     def test_remove_person(self):
-        person_id = self.personA.get_id()
+        person_id = self.personA.identifier
         self.roomallocation.remove_person(person_id)
-        self.assertIsNone(self.roomallocation.amity.get_person(person_id))
+        self.assertIsNone(self.roomallocation.amity.persons.get(person_id))
 
     def test_remove_person_two(self):
-        person_id = self.personA.get_id()
-        room = self.roomallocation.amity.get_room(self.personA.get_allocation("office"))
+        person_id = self.personA.identifier
+        self.roomallocation.allocate_office(self.personA.identifier)
+        room = self.roomallocation.amity \
+            .rooms[self.personA.room_name["office"]]
         self.roomallocation.remove_person(person_id)
-        self.assertNotIn(person_id, room.get_occupants())
+        self.assertNotIn(person_id, room.occupants)
+
+    def test_remove_person_three(self):
+        with self.assertRaises(KeyError):
+            self.roomallocation.remove_person('invalidname')
 
     def test_remove_room(self):
         room_id = self.livingA.get_id()
         self.roomallocation.remove_room(room_id)
-        self.assertIsNone(self.roomallocation.amity.get_room(room_id))
+        self.assertIsNone(self.roomallocation.amity.rooms.get(room_id))
 
     def test_remove_room_two(self):
         room_id = self.livingA.get_id()
@@ -88,16 +123,16 @@ class TestRoomAllocation(unittest.TestCase):
         self.roomallocation.remove_room(room_id)
         for i in occupants:
             occupant = occupants[i]
-            self.assertEqual(9, occupant.get_allocation("livingroom"))
+            self.assertEqual(9, occupant.get_allocation("livingspace"))
+
+    def test_remove_room_three(self):
+        with self.assertRaises(KeyError):
+            self.roomallocation.remove_room('notthere')
 
     def test_select_random(self):
-        aDict = {"one":1, "two":2, "three": 3, "four": 4}
-        random = self.roomallocation.select_random(aDict)
-        self.assertIn(random, aDict.values())
-
-    def test_allocate_room(self):
-        self.roomallocation.allocate_room(self.personA.get_id(), {"spata": self.livingA})
-        self.assertIn("malikwahab", self.livingA.get_occupants())
+        a_dict = {"one": 1, "two": 2, "three": 3, "four": 4}
+        random = self.roomallocation.select_random(a_dict)
+        self.assertIn(random, a_dict.values())
 
     def test_get_unallocated(self):
         fellow1 = Fellow("Jose Morinho", "M", "Y")
@@ -113,8 +148,20 @@ class TestRoomAllocation(unittest.TestCase):
         self.roomallocation.create_person(fellow4)
         self.roomallocation.create_person(fellow5)
         self.roomallocation.create_person(fellow6)
-        self.roomallocation.create_person(fellow7)
-        self.assertIn(fellow7, self.roomallocation.get_unallocated()[1].values())
+        try:
+            self.roomallocation.create_person(fellow7)
+        except NoRoomError:
+            pass
+        self.assertIn(fellow7, self.roomallocation.
+                      get_unallocated()[1].values())
+
+    def test_get_unallocated_two(self):
+        fellow1 = Fellow("Jose Morinho", "M", "Y")
+        self.roomallocation.create_person(fellow1)
+        office_id = fellow1.room_name.get('office')
+        self.roomallocation.remove_room(office_id)
+        self.assertIn(fellow1, self.roomallocation.
+                      get_unallocated()[0].values())
 
     def test_print_person(self):
         person_string = self.roomallocation.print_person(self.personA)
@@ -127,30 +174,33 @@ class TestRoomAllocation(unittest.TestCase):
         self.assertEqual(person_string, expected_string)
 
     def test_print_room(self):
+        self.livingA.add_occupant(self.personA)
         room_string = self.roomallocation.print_room(self.livingA.get_id())
-        expected_string = "\n--Spata(Living Room)--\n"
+        expected_string = "\n--Spata(livingspace)--\n"
         expected_string += "MALIK WAHAB FELLOW Y\n"
         self.assertEqual(room_string, expected_string)
 
     def test_build_allocation_string(self):
         allocation_string = self.roomallocation.build_allocation_string()
-        rooms = self.roomallocation.amity.get_rooms()
+        rooms = self.roomallocation.amity.rooms
         expected_string = ""
         for room_id in rooms:
             expected_string += self.roomallocation.print_room(room_id)
         self.assertEqual(allocation_string, expected_string)
 
     def test_build_unallocated_string(self):
-        self.roomallocation.remove_room('spata')
+        self.roomallocation.remove_person(self.personB.identifier)
         unallocated_string = self.roomallocation.build_unallocation_string()
         expected_string = "  --Unallocated for Office-- \n\n"
-        expected_string += "\n \n --Unallocated for LivingRoom-- \n\n"
+        expected_string += "MALIK WAHAB FELLOW Y\n"
+        expected_string += "\n \n --Unallocated for LivingSpace-- \n\n"
         expected_string += "MALIK WAHAB FELLOW Y\n"
         self.assertEqual(unallocated_string, expected_string)
 
     def test_print_allocation_to_file(self):
-        self.roomallocation.print_allocation_to_file("test/test_allocation_to_file.txt")
-        rooms = self.roomallocation.amity.get_rooms()
+        self.roomallocation.print_allocation_to_file("test/test" +
+                                                     "_allocation_to_file.txt")
+        rooms = self.roomallocation.amity.rooms
         expected_string = ""
         for room_id in rooms:
             expected_string += self.roomallocation.print_room(room_id)
@@ -160,13 +210,13 @@ class TestRoomAllocation(unittest.TestCase):
         os.remove("test/test_allocation_to_file.txt")
         self.assertEqual(allocation_string_from_file, expected_string)
 
-
     def test_print_unallocated_to_file(self):
-        self.roomallocation.remove_room('spata')
-        self.roomallocation.print_unallocated_to_file('test/test_unallocated_to_file.txt')
-        unallocated_string = self.roomallocation.build_unallocation_string()
+        self.roomallocation.remove_person(self.personB.identifier)
+        self.roomallocation \
+            .print_unallocated_to_file('test/test_unallocated_to_file.txt')
         expected_string = "  --Unallocated for Office-- \n\n"
-        expected_string += "\n \n --Unallocated for LivingRoom-- \n\n"
+        expected_string += "MALIK WAHAB FELLOW Y\n"
+        expected_string += "\n \n --Unallocated for LivingSpace-- \n\n"
         expected_string += "MALIK WAHAB FELLOW Y\n"
         with open("test/test_unallocated_to_file.txt", 'r') as allocation_line:
             unallocated_string_from_file = allocation_line.read()

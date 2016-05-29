@@ -26,3 +26,13 @@ class RoomGenderDiffError(Error):
 class PersonInRoomError(Error):
     """Person already in Room"""
     pass
+
+
+class NoRoomError(Error):
+    """Raise when there is no available room ro assign to person"""
+    pass
+
+
+class PersonAllocatedError(Error):
+    """Raise when person already allocated is allocated again"""
+    pass
