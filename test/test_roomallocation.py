@@ -235,12 +235,13 @@ class TestRoomAllocation(unittest.TestCase):
         self.roomallocation.save_to_database(db)
         persons = db.get_persons()
         os.remove('test/test_save.db')
-        self.assertIn('malikwahab', persons)
+        self.assertIn(self.personA.identifier, persons)
 
     def test_load_from_database(self):
         db = AllocationDb('test/test_save.db')
         self.roomallocation.save_to_database(db)
-        self.roomallocation.remove_person('malikwahab')
+        del self.roomallocation.amity.persons[self.personA.identifier]
         self.roomallocation.remove_room('spata')
         self.roomallocation.load_from_database(db)
-        self.assertIn('malikwahab', self.roomallocation.amity.get_persons())
+        self.assertIn(self.personA.identifier,
+                      self.roomallocation.amity.persons)
