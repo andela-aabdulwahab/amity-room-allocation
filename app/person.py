@@ -1,4 +1,5 @@
-import uuid
+import random
+
 
 class Person():
 
@@ -35,7 +36,7 @@ class Person():
 	def is_allocated(self, room_type):
 		""" checks if person is allocated
 		Arguments:
-		    room_type - the room type to check for
+            room_type - the room type to check for
 		returns:
 		    True if the room type is specify in room_name
 
@@ -46,11 +47,16 @@ class Person():
 		''' Generate a unique Id for person using UUID4
 
 		return
-		   the first part of uuid4 generated
+		the first part of uuid4 generated
 
 		'''
-		#str(uuid.uuid4()).split('-')[0]
-		uuid_generated = uuid.uuid4()
-		uuid_to_string = str(uuid_generated)
-		uuid_first_part = uuid_to_string.split('-')[0]
-		return uuid_first_part
+		alpha_nums = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
+			'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+			'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'a',
+			'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+			'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z')
+		set1 = random.sample(range(0, 62), 4)
+		random_id = random.choice(alpha_nums)
+		for i in set1:
+			random_id += alpha_nums[i]
+		return random_id
