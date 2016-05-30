@@ -1,6 +1,7 @@
 import unittest
 
 from app.amity import Amity
+from app.exceptions import SameNameRoomError
 from app.fellow import Fellow
 from app.livingspace import LivingSpace
 from app.office import Office
@@ -33,8 +34,9 @@ class TestAmity(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.amity.rooms = "spata"
 
-    def test_get_rooms_two(self):
-        self.assertEqual(self.amity.rooms.get('roses'), self.livingB)
+    def test_ad_room_two(self):
+        with self.assertRaises(SameNameRoomError):
+            self.amity.add_room(self.livingB)
 
     def test_get_rooms(self):
         self.amity.rooms = self.livingA
@@ -57,7 +59,6 @@ class TestAmity(unittest.TestCase):
         self.amity.rooms = self.officeA
         self.amity.rooms = self.officeB
         self.amity.rooms = self.livingA
-        self.amity.rooms = self.livingB
         office_dict = {"moon": self.officeA, "mecury": self.officeB}
         self.assertEqual(office_dict, self.amity.get_offices())
 
@@ -65,7 +66,6 @@ class TestAmity(unittest.TestCase):
         self.amity.rooms = self.officeA
         self.amity.rooms = self.officeB
         self.amity.rooms = self.livingA
-        self.amity.rooms = self.livingB
         living_dict = {"spata": self.livingA}
         self.assertEqual(living_dict, self.amity.get_livingspaces("M"))
 
@@ -73,7 +73,6 @@ class TestAmity(unittest.TestCase):
         self.amity.rooms = self.officeA
         self.amity.rooms = self.officeB
         self.amity.rooms = self.livingA
-        self.amity.rooms = self.livingB
         living_dict = {"spata": self.livingA, "roses": self.livingB}
         self.assertEqual(living_dict, self.amity.get_all_livingspaces())
 

@@ -1,3 +1,4 @@
+from app.exceptions import SameNameRoomError
 from app.fellow import Fellow
 from app.livingspace import LivingSpace
 from app.office import Office
@@ -18,7 +19,7 @@ class Amity():
     """
 
     def __init__(self):
-        """initialize instance variable rooms and person with empty dict"""
+        """Initialize instance variable rooms and person with empty dict"""
 
         self._rooms = {}
         self._persons = {}
@@ -30,7 +31,10 @@ class Amity():
             room_obj: Object of type room
         """
         if isinstance(room_obj, Room):
-            self._rooms[room_obj.get_id()] = room_obj
+            if not self._rooms.get(room_obj.get_id()):
+                self._rooms[room_obj.get_id()] = room_obj
+            else:
+                raise SameNameRoomError
         else:
             raise TypeError("Argument passed not of type Room")
 
@@ -62,7 +66,7 @@ class Amity():
         return self._persons
 
     def get_offices(self):
-        """ Gets all room of type Office
+        """Get all room of type Office.
 
         Returns:
             offices: Rooms of type office
@@ -74,12 +78,11 @@ class Amity():
         return offices
 
     def get_all_livingspaces(self):
-        """ Get all rooms use checking for instance to
-        select lving room
+        """Get all rooms use checking for instance to
+        select lving room.
 
         Returns:
             livingspace: Rooms of type LivingSpace
-
         """
         livingspaces = {}
         for i in self._rooms:
