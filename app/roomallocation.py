@@ -52,9 +52,7 @@ class RoomAllocation():
         Returns:
             Dict: of the rooms allocated person
         """
-
         self.amity.add_person(person_obj)
-
         try:
             office_status = self.allocate_office(person_obj.identifier)
         except NoRoomError:
@@ -70,7 +68,7 @@ class RoomAllocation():
         return [office_status]
 
     def select_random(self, adict):
-        """Return a random member of the database provided
+        """Return a random member of the database provided.
 
         Arguments:
             adict: this is the dictionary where random member will be selected
@@ -82,7 +80,7 @@ class RoomAllocation():
         return adict[random_key]
 
     def allocate_office(self, person_id):
-        """Allocate office to person of specified id
+        """Allocate office to person of specified id.
 
         Arguments:
             person_id: id of person object that will be allocated to an office
@@ -207,6 +205,12 @@ class RoomAllocation():
         del self.amity.persons[person_id]
 
     def print_persons(self):
+        """Print a list of persons in amity.
+
+        Returns
+            String: names and identifier of persons in Amity
+
+        """
         persons = self.amity.persons
         persons_string = "List of Persons with Id\n"
         for i in persons:
@@ -217,7 +221,7 @@ class RoomAllocation():
         return persons_string
 
     def get_unallocated(self):
-        """Gets all person in amity without an office
+        """Get all person in amity without an office
         or a living space
 
         Returns:
@@ -228,18 +232,15 @@ class RoomAllocation():
         office_unallocated = {}
         livingspace_unallocated = {}
         for person_id in persons:
-            if isinstance(persons[person_id], Fellow):
-                if not persons[person_id].is_allocated("office"):
+            if not persons[person_id].is_allocated("office"):
                     office_unallocated[person_id] = persons[person_id]
+            if isinstance(persons[person_id], Fellow):
                 if not persons[person_id].is_allocated('livingspace'):
                     livingspace_unallocated[person_id] = persons[person_id]
-            else:
-                if not persons[person_id].is_allocated("office"):
-                    office_unallocated[person_id] = persons[person_id]
         return [office_unallocated, livingspace_unallocated]
 
     def print_unallocated_to_file(self, file_name):
-        """Prints name of unallocated person to file specified.
+        """Print name of unallocated person to file specified.
 
         Arguments:
             file_name: path and name to file where information will be printed
@@ -250,7 +251,7 @@ class RoomAllocation():
         file_obj.close()
 
     def build_unallocation_string(self):
-        """Builds the string of unallocated persons.
+        """Build the string of unallocated persons.
 
         Return
             string of unallocated persons
@@ -259,19 +260,32 @@ class RoomAllocation():
         unallocated = self.get_unallocated()
         office_unallocated = unallocated[0]
         livingspace_unallocated = unallocated[1]
-        unallocated_string = " "
-        unallocated_string += " --Unallocated for Office-- \n\n"
-        for person_id in office_unallocated:
+        unallocated_string = self.unallocated_persons_list(
+            office_unallocated, "Office")
+        unallocated_string += self.unallocated_persons_list(
+            livingspace_unallocated, "LivingSpace")
+        return unallocated_string
+
+    def unallocated_persons_list(self, unallocated_dict, unallocated_type):
+        """Build the string of unallocated person in the dict supplied.
+
+        Arguments:
+            unallocated_dict: Dict of persons object
+            unallocated_type: String specifying the type allocation
+
+        Returns:
+            String: Of formated list of persons info
+
+        """
+        unallocated_string = "--Unallocated for {}-- \n\n" \
+                             .format(unallocated_type)
+        for person_id in unallocated_dict:
             unallocated_string += \
-                self.print_person(office_unallocated[person_id])
-        unallocated_string += "\n \n --Unallocated for LivingSpace-- \n\n"
-        for person_id in livingspace_unallocated:
-            unallocated_string += \
-                self.print_person(livingspace_unallocated[person_id])
+                self.print_person(unallocated_dict[person_id])
         return unallocated_string
 
     def print_allocation_to_file(self, file_name):
-        """Prints the room allocation at Amity to file
+        """Print the room allocation at Amity to file.
 
         Arguments:
             file_name: path and name to file where information will be printed
@@ -296,7 +310,7 @@ class RoomAllocation():
         return allocation_string
 
     def print_room(self, room_id):
-        """Builds the string of a room with the persons in it
+        """Build the string of a room with the persons in it
 
         Arguments:
             room_id - id of room to print
@@ -312,7 +326,7 @@ class RoomAllocation():
         return room_string
 
     def print_person(self, person_obj):
-        """Builds a string of person object printing out the name
+        """Build a string of person object printing out the name.
 
         Arguments:
             person_obj - person to printed to file

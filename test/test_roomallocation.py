@@ -202,9 +202,9 @@ class TestRoomAllocation(unittest.TestCase):
     def test_build_unallocated_string(self):
         self.roomallocation.remove_person(self.personB.identifier)
         unallocated_string = self.roomallocation.build_unallocation_string()
-        expected_string = "  --Unallocated for Office-- \n\n"
+        expected_string = "--Unallocated for Office-- \n\n"
         expected_string += "MALIK WAHAB FELLOW Y\n"
-        expected_string += "\n \n --Unallocated for LivingSpace-- \n\n"
+        expected_string += "--Unallocated for LivingSpace-- \n\n"
         expected_string += "MALIK WAHAB FELLOW Y\n"
         self.assertEqual(unallocated_string, expected_string)
 
@@ -225,9 +225,9 @@ class TestRoomAllocation(unittest.TestCase):
         self.roomallocation.remove_person(self.personB.identifier)
         self.roomallocation \
             .print_unallocated_to_file('test/test_unallocated_to_file.txt')
-        expected_string = "  --Unallocated for Office-- \n\n"
+        expected_string = "--Unallocated for Office-- \n\n"
         expected_string += "MALIK WAHAB FELLOW Y\n"
-        expected_string += "\n \n --Unallocated for LivingSpace-- \n\n"
+        expected_string += "--Unallocated for LivingSpace-- \n\n"
         expected_string += "MALIK WAHAB FELLOW Y\n"
         with open("test/test_unallocated_to_file.txt", 'r') as allocation_line:
             unallocated_string_from_file = allocation_line.read()
