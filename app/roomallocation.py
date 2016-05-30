@@ -33,7 +33,7 @@ class RoomAllocation():
         Raises:
             TypeError
         """
-        self.amity.rooms = room_obj
+        self.amity.add_room(room_obj)
 
     def create_person(self, person_obj):
         """ Create a person and add to Amity
@@ -47,24 +47,22 @@ class RoomAllocation():
         Returns:
             Dict: of the rooms allocated person
         """
+
+        self.amity.add_person(person_obj)
+
         try:
-            self.amity.persons = person_obj
-        except:
-            raise TypeError
-        else:
+            office_status = self.allocate_office(person_obj.identifier)
+        except NoRoomError:
+            office_status = False
+        if (isinstance(person_obj, Fellow) and
+           person_obj.wants_accomodation()):
             try:
-                office_status = self.allocate_office(person_obj.identifier)
+                livingspace_status = \
+                    self.allocate_livingspace(person_obj.identifier)
             except NoRoomError:
-                office_status = False
-            if (isinstance(person_obj, Fellow) and
-               person_obj.wants_accomodation()):
-                try:
-                    livingspace_status = \
-                        self.allocate_livingspace(person_obj.identifier)
-                except NoRoomError:
-                    livingspace_status = False
-                return (office_status, livingspace_status)
-            return (office_status)
+                livingspace_status = False
+            return [office_status, livingspace_status]
+        return [office_status]
 
     def select_random(self, adict):
         """ Return a random member of the database provided
@@ -87,10 +85,10 @@ class RoomAllocation():
         return self.allocate_room(person_id, self.amity.get_offices())
 
     def allocate_livingspace(self, person_id):
-        """ allocate livingroom to person of specified id
+        """ allocate livingspace to person of specified id
         Arguments:
             person_id - id of person object that will be allocated to a
-                        livingroom
+                        livingspace
 
         Returns:
             the status of the allocation
@@ -98,10 +96,10 @@ class RoomAllocation():
         try:
             person_obj = self.amity.persons[person_id]
             gender = person_obj.gender
-            gender_livingrooms = self.amity.get_livingspaces(gender)
+            gender_livingspaces = self.amity.get_livingspaces(gender)
         except KeyError:
             raise KeyError("Invalid person Id provided")
-        return self.allocate_room(person_id, gender_livingrooms)
+        return self.allocate_room(person_id, gender_livingspaces)
 
     def allocate_room(self, person_id, room_dict):
         """ allocate a random room from the supplied room dictionary
@@ -136,7 +134,7 @@ class RoomAllocation():
         if person_obj.is_allocated(room_type):
             raise PersonAllocatedError
         else:
-            room_obj.occupants = person_obj
+            room_obj.add_occupant(person_obj)
             person_obj.room_name[room_type] = room_obj.get_id()
             return True
 
@@ -164,7 +162,7 @@ class RoomAllocation():
         old_room_obj = self.amity.rooms[old_room_name]
         if person_id in old_room_obj.occupants:
             del old_room_obj.occupants[person_obj.identifier]
-            new_room_obj.occupants = person_obj
+            new_room_obj.add_occupant(person_obj)
             person_obj.room_name[room_type] = new_room_obj.get_id()
 
     def remove_room(self, room_id):
@@ -192,36 +190,36 @@ class RoomAllocation():
         """
         person = self.amity.persons[person_id]
         office_allocation = person.room_name.get("office")
-        livingroom_allocation = person.room_name.get("livingroom")
+        livingspace_allocation = person.room_name.get("livingspace")
         if office_allocation:
             office = self.amity.rooms[office_allocation]
             del office.occupants[person.identifier]
-        if livingroom_allocation:
-            livingroom = self.amity.rooms[livingroom_allocation]
-            del livingroom.occupants[person.identifier]
+        if livingspace_allocation:
+            livingspace = self.amity.rooms[livingspace_allocation]
+            del livingspace.occupants[person.identifier]
         del self.amity.persons[person_id]
 
     def get_unallocated(self):
         """ gets all person in amity without an office
-        or a livingroom
+        or a living space
 
         Returns:
-            list: a list of dictionary of persons unallocated for livingroom
+            list: a list of dictionary of persons unallocated for Living space
             and office
         """
         persons = self.amity.persons
         office_unallocated = {}
-        livingroom_unallocated = {}
+        livingspace_unallocated = {}
         for person_id in persons:
             if isinstance(persons[person_id], Fellow):
                 if not persons[person_id].is_allocated("office"):
                     office_unallocated[person_id] = persons[person_id]
                 if not persons[person_id].is_allocated('livingspace'):
-                    livingroom_unallocated[person_id] = persons[person_id]
+                    livingspace_unallocated[person_id] = persons[person_id]
             else:
                 if not persons[person_id].is_allocated("office"):
                     office_unallocated[person_id] = persons[person_id]
-        return [office_unallocated, livingroom_unallocated]
+        return [office_unallocated, livingspace_unallocated]
 
     def print_unallocated_to_file(self, file_name):
         """ Prints name of unallocated person to file specified
@@ -243,16 +241,16 @@ class RoomAllocation():
         """
         unallocated = self.get_unallocated()
         office_unallocated = unallocated[0]
-        livingroom_unallocated = unallocated[1]
+        livingspace_unallocated = unallocated[1]
         unallocated_string = " "
         unallocated_string += " --Unallocated for Office-- \n\n"
         for person_id in office_unallocated:
             unallocated_string += \
                 self.print_person(office_unallocated[person_id])
         unallocated_string += "\n \n --Unallocated for LivingSpace-- \n\n"
-        for person_id in livingroom_unallocated:
+        for person_id in livingspace_unallocated:
             unallocated_string += \
-                self.print_person(livingroom_unallocated[person_id])
+                self.print_person(livingspace_unallocated[person_id])
         return unallocated_string
 
     def print_allocation_to_file(self, file_name):
@@ -342,11 +340,11 @@ class RoomAllocation():
         for i in persons:
             person = persons[i]
             if isinstance(person, Fellow):
-                livingroom_allocation = person.room_name.get("livingroom")
+                livingspace_allocation = person.room_name.get("livingspace")
                 office_allocation = person.room_name.get("office")
-                if livingroom_allocation:
-                    livingroom = rooms[livingroom_allocation]
-                    livingroom.add_occupant(person)
+                if livingspace_allocation:
+                    livingspace = rooms[livingspace_allocation]
+                    livingspace.add_occupant(person)
                 if office_allocation:
                     office = rooms[office_allocation]
                     office.add_occupant(person)

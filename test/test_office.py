@@ -13,7 +13,7 @@ class TestOffice(unittest.TestCase):
         self.assertTrue(issubclass(Office, Room))
 
     def test_init_name(self):
-        self.assertEqual("Orion", self.orion.get_name())
+        self.assertEqual("Orion", self.orion.name)
 
     def test_init_size(self):
-        self.assertEqual(6, self.orion.get_size())
+        self.assertEqual(6, self.orion.size)

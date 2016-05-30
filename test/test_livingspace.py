@@ -7,12 +7,12 @@ from app.room import Room
 from app.staff import Staff
 
 
-class TestLivingRoom(unittest.TestCase):
+class TestLivingSpace(unittest.TestCase):
     def setUp(self):
         self.spata = LivingSpace("spata", "M")
         self.personA = Fellow("Malik Wahab", "M", "Y")
         self.personB = Fellow("Temi Tope", "F", "N")
-        self.personC = Staff("Joe Jack", "F", "Engineering")
+        self.personC = Staff("Joe Jack", "F")
 
     def test_room_inheritance(self):
         self.assertTrue(issubclass(LivingSpace, Room))

@@ -1,4 +1,4 @@
-import inspect, os, sys
+import os
 import unittest
 
 from app.allocation_db import AllocationDb
@@ -9,11 +9,6 @@ from app.livingspace import LivingSpace
 from app.office import Office
 from app.roomallocation import RoomAllocation
 from app.staff import Staff
-
-currentdir = os.path.dirname(os.path.abspath(inspect.
-                             getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
 
 
 class TestRoomAllocation(unittest.TestCase):
@@ -40,6 +35,12 @@ class TestRoomAllocation(unittest.TestCase):
         fellow = Fellow("Jose Morinho", "M", "Y")
         self.roomallocation.create_person(fellow)
         self.assertTrue(fellow.is_allocated("livingspace"))
+
+    def test_creat_person_two(self):
+        self.roomallocation.remove_room(self.officeA.get_id())
+        self.roomallocation.remove_room(self.officeB.get_id())
+        status = self.roomallocation.create_person(self.personB)
+        self.assertFalse(status[0])
 
     def test_create_person_two(self):
         fellow = Fellow("Jose Morinho", "M", "Y")
@@ -103,6 +104,7 @@ class TestRoomAllocation(unittest.TestCase):
     def test_remove_person_two(self):
         person_id = self.personA.identifier
         self.roomallocation.allocate_office(self.personA.identifier)
+        self.roomallocation.allocate_livingspace(self.personA.identifier)
         room = self.roomallocation.amity \
             .rooms[self.personA.room_name["office"]]
         self.roomallocation.remove_person(person_id)
@@ -239,6 +241,10 @@ class TestRoomAllocation(unittest.TestCase):
 
     def test_load_from_database(self):
         db = AllocationDb('test/test_save.db')
+        fellow = Fellow("Jose Morinho", "M", "Y")
+        staff = Staff("Alex Fergie", "M")
+        self.roomallocation.create_person(fellow)
+        self.roomallocation.create_person(staff)
         self.roomallocation.save_to_database(db)
         del self.roomallocation.amity.persons[self.personA.identifier]
         self.roomallocation.remove_room('spata')

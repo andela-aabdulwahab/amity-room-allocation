@@ -29,7 +29,7 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(self.mars.occupants, {})
 
     def test_add_occupant(self):
-        self.mars.add_occupants(self.personA)
+        self.mars.add_occupant(self.personA)
         key = self.personA.identifier
         self.assertEqual(self.mars.occupants[key], self.personA)
 
