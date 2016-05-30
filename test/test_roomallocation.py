@@ -131,6 +131,15 @@ class TestRoomAllocation(unittest.TestCase):
         with self.assertRaises(KeyError):
             self.roomallocation.remove_room('notthere')
 
+    def test_print_persons(self):
+        del self.roomallocation.amity.persons[self.personB.identifier]
+        persons_string = self.roomallocation.print_persons()
+        expected_string = "List of Persons with Id\n"
+        expected_string += (self.personA.name + " fellow " +
+                            self.personA.identifier + "\n")
+        self.assertEqual(persons_string, expected_string)
+
+
     def test_select_random(self):
         a_dict = {"one": 1, "two": 2, "three": 3, "four": 4}
         random = self.roomallocation.select_random(a_dict)
