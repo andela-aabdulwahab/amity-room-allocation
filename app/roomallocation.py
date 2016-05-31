@@ -310,7 +310,7 @@ class RoomAllocation():
         return allocation_string
 
     def print_room(self, room_id):
-        """Build the string of a room with the persons in it
+        """Build the string of a room with the persons in it.
 
         Arguments:
             room_id - id of room to print
