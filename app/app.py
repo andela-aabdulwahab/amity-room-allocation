@@ -139,25 +139,25 @@ def relocate_person(person_identifier, new_room_name):
 def print_allocation(file_name=False):
     allocation = load_state()
     if file_name:
-        allocation.print_allocation_to_file(file_name)
+        allocation.rmprint.print_allocation_to_file(file_name)
         return "Unallocated printed to " + file_name
     else:
-        return allocation.build_allocation_string()
+        return allocation.rmprint.build_allocation_string()
 
 
 def print_unallocated(file_name=False):
     allocation = load_state()
     if file_name:
-        allocation.print_unallocated_to_file(file_name)
+        allocation.rmprint.print_unallocated_to_file(file_name)
         return "Allocation printed to" + file_name
     else:
-        return allocation.build_unallocation_string()
+        return allocation.rmprint.build_unallocation_string()
 
 
 def print_room(room_name):
     allocation = load_state()
     try:
-        return allocation.print_room(room_name)
+        return allocation.rmprint.print_room(room_name)
     except KeyError:
         return "Invalid room id supplied"
 
@@ -210,7 +210,7 @@ def delete(del_id, del_type):
 
 def print_persons():
     roomallocation = load_state()
-    return roomallocation.print_persons()
+    return roomallocation.rmprint.print_persons()
 
 
 

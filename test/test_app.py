@@ -169,7 +169,7 @@ class TestApp(unittest.TestCase):
         self.args['print_allocation'] = True
         self.args['--option'] = ''
         roomallocation = load_state()
-        expected_string = roomallocation.build_allocation_string()
+        expected_string = roomallocation.rmprint.build_allocation_string()
         self.assertEqual(self.capture_output(), expected_string)
 
     def test_print_allocation_file(self):
@@ -185,11 +185,8 @@ class TestApp(unittest.TestCase):
         self.reset_call()
         self.args['print_unallocated'] = True
         self.args['--option'] = ''
-        with Capturing() as output:
-            main(self.args)
-        output_string = '\n'.join(output)
         roomallocation = load_state()
-        expected_string = roomallocation.build_unallocation_string()
+        expected_string = roomallocation.rmprint.build_unallocation_string()
         self.assertEqual(self.capture_output(), expected_string)
 
     def test_print_unallocated_file(self):
@@ -206,7 +203,7 @@ class TestApp(unittest.TestCase):
         self.args['print_room'] = True
         self.args['<room_name>'] = ['mars']
         roomallocation = load_state()
-        expected_string = roomallocation.print_room('mars')
+        expected_string = roomallocation.rmprint.print_room('mars')
         self.assertEqual(self.capture_output(), expected_string)
 
     def test_print_room_invalid(self):
@@ -216,11 +213,11 @@ class TestApp(unittest.TestCase):
         expected_string = "Invalid room id supplied"
         self.assertEqual(self.capture_output(), expected_string)
 
-    def print_persons(self):
+    def test_print_persons(self):
         self.reset_call()
         self.args['print_persons'] = True
         roomallocation = load_state()
-        expected_string = roomallocation.print_persons()
+        expected_string = roomallocation.rmprint.print_persons()
         self.assertEqual(self.capture_output(), expected_string)
 
     def test_delete_person(self):

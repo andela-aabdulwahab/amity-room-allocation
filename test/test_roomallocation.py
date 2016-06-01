@@ -131,15 +131,6 @@ class TestRoomAllocation(unittest.TestCase):
         with self.assertRaises(KeyError):
             self.roomallocation.remove_room('notthere')
 
-    def test_print_persons(self):
-        del self.roomallocation.amity.persons[self.personB.identifier]
-        persons_string = self.roomallocation.print_persons()
-        expected_string = "List of Persons with Id\n"
-        expected_string += (self.personA.name + " fellow " +
-                            self.personA.identifier + "\n")
-        self.assertEqual(persons_string, expected_string)
-
-
     def test_select_random(self):
         a_dict = {"one": 1, "two": 2, "three": 3, "four": 4}
         random = self.roomallocation.select_random(a_dict)
@@ -163,7 +154,7 @@ class TestRoomAllocation(unittest.TestCase):
             self.roomallocation.create_person(fellow7)
         except NoRoomError:
             pass
-        self.assertIn(fellow7, self.roomallocation.
+        self.assertIn(fellow7, self.roomallocation.rmprint.
                       get_unallocated()[1].values())
 
     def test_get_unallocated_two(self):
@@ -171,37 +162,45 @@ class TestRoomAllocation(unittest.TestCase):
         self.roomallocation.create_person(fellow1)
         office_id = fellow1.room_name.get('office')
         self.roomallocation.remove_room(office_id)
-        self.assertIn(fellow1, self.roomallocation.
+        self.assertIn(fellow1, self.roomallocation.rmprint.
                       get_unallocated()[0].values())
 
+    def test_print_persons(self):
+        del self.roomallocation.amity.persons[self.personB.identifier]
+        persons_string = self.roomallocation.rmprint.print_persons()
+        expected_string = "List of Persons with Id\n"
+        expected_string += (self.personA.name + " fellow " +
+                            self.personA.identifier + "\n")
+        self.assertEqual(persons_string, expected_string)
+
     def test_print_person(self):
-        person_string = self.roomallocation.print_person(self.personA)
+        person_string = self.roomallocation.rmprint.print_person(self.personA)
         expected_string = "MALIK WAHAB FELLOW Y\n"
         self.assertEqual(person_string, expected_string)
 
     def test_print_person_two(self):
-        person_string = self.roomallocation.print_person(self.personB)
+        person_string = self.roomallocation.rmprint.print_person(self.personB)
         expected_string = "JOE JACK STAFF \n"
         self.assertEqual(person_string, expected_string)
 
     def test_print_room(self):
         self.livingA.add_occupant(self.personA)
-        room_string = self.roomallocation.print_room(self.livingA.get_id())
+        room_string = self.roomallocation.rmprint.print_room(self.livingA.get_id())
         expected_string = "\n--Spata(livingspace)--\n"
         expected_string += "MALIK WAHAB FELLOW Y\n"
         self.assertEqual(room_string, expected_string)
 
     def test_build_allocation_string(self):
-        allocation_string = self.roomallocation.build_allocation_string()
+        allocation_string = self.roomallocation.rmprint.build_allocation_string()
         rooms = self.roomallocation.amity.rooms
         expected_string = ""
         for room_id in rooms:
-            expected_string += self.roomallocation.print_room(room_id)
+            expected_string += self.roomallocation.rmprint.print_room(room_id)
         self.assertEqual(allocation_string, expected_string)
 
     def test_build_unallocated_string(self):
         self.roomallocation.remove_person(self.personB.identifier)
-        unallocated_string = self.roomallocation.build_unallocation_string()
+        unallocated_string = self.roomallocation.rmprint.build_unallocation_string()
         expected_string = "--Unallocated for Office-- \n\n"
         expected_string += "MALIK WAHAB FELLOW Y\n"
         expected_string += "--Unallocated for LivingSpace-- \n\n"
@@ -209,12 +208,12 @@ class TestRoomAllocation(unittest.TestCase):
         self.assertEqual(unallocated_string, expected_string)
 
     def test_print_allocation_to_file(self):
-        self.roomallocation.print_allocation_to_file("test/test" +
+        self.roomallocation.rmprint.print_allocation_to_file("test/test" +
                                                      "_allocation_to_file.txt")
         rooms = self.roomallocation.amity.rooms
         expected_string = ""
         for room_id in rooms:
-            expected_string += self.roomallocation.print_room(room_id)
+            expected_string += self.roomallocation.rmprint.print_room(room_id)
         allocation_string_from_file = ""
         with open("test/test_allocation_to_file.txt", 'r') as allocation_line:
             allocation_string_from_file += allocation_line.read()
@@ -223,7 +222,7 @@ class TestRoomAllocation(unittest.TestCase):
 
     def test_print_unallocated_to_file(self):
         self.roomallocation.remove_person(self.personB.identifier)
-        self.roomallocation \
+        self.roomallocation.rmprint \
             .print_unallocated_to_file('test/test_unallocated_to_file.txt')
         expected_string = "--Unallocated for Office-- \n\n"
         expected_string += "MALIK WAHAB FELLOW Y\n"
