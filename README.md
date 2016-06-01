@@ -1,2 +1,3 @@
 [![Build Status](https://travis-ci.org/andela-aabdulwahab/checkpoint_one.svg?branch=develop)](https://travis-ci.org/andela-aabdulwahab/checkpoint_one)
 [![Coverage Status](https://coveralls.io/repos/github/andela-aabdulwahab/checkpoint_one/badge.svg?branch=master)](https://coveralls.io/github/andela-aabdulwahab/checkpoint_one?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/andela-aabdulwahab/checkpoint_one/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/andela-aabdulwahab/checkpoint_one/?branch=develop)
