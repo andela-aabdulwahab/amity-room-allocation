@@ -96,6 +96,8 @@ class TestApp(unittest.TestCase):
         self.assertEqual(output_string, expected_string)
 
     def test_add_person_three(self):
+        self.args['create_room'] = False
+        self.args['add_person'] = False
         self.args['delete_room'] = True
         self.args['<room_name>'] = ['mars']
         main(self.args)
