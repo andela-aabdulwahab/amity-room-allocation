@@ -5,4 +5,4 @@ checks:
 filter:
     excluded_paths:
         - '*/test/*'
-        - 'app.py'
+        - 'app/app.py'
