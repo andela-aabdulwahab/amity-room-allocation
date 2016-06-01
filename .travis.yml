@@ -6,5 +6,4 @@ install: "pip install -r requirements.txt"
 # command to run tests
 script:
  - python -m nose --with-coverage --cover-package app
- - coveralls debug
 after-success: coveralls
