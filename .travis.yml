@@ -8,4 +8,5 @@ install:
 # command to run tests
 script:
  - python -m nose --with-coverage --cover-package=app
+ - coveralls
 after-success: coveralls
