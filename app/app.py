@@ -1,17 +1,17 @@
 """
 
 usage:
-    docopt_test.py create_room (<room_name> <room_type> [-g=RG])...
-    docopt_test.py add_person <first_name> <last_name> <gender> <person_type> [-w=WA]
-    docopt_test.py relocate_person <person_identifier> <new_room_name>
-    docopt_test.py delete_room <room_name>
-    docopt_test.py delete_person <person_id>
-    docopt_test.py print_persons
-    docopt_test.py print_allocation [-o=FN]
-    docopt_test.py print_unallocated [-o=FN]
-    docopt_test.py print_room <room_name>
-    docopt_test.py save_state [-b=SQLD]
-    docopt_test.py load_state <db_path>
+    app.py create_room (<room_name> <room_type> [-g=RG])...
+    app.py add_person <first_name> <last_name> <gender> <person_type> [-w=WA]
+    app.py relocate_person <person_identifier> <new_room_name>
+    app.py delete_room <room_name>
+    app.py delete_person <person_id>
+    app.py print_persons
+    app.py print_allocation [-o=FN]
+    app.py print_unallocated [-o=FN]
+    app.py print_room <room_name>
+    app.py save_state [-b=SQLD]
+    app.py load_state <db_path>
 
 option:
    -help -h                               Geting help on using the program
