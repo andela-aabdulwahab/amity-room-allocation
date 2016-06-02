@@ -9,10 +9,8 @@ Space Allocation app for managing living space and office space at one of Andela
 Rooms are allocated randomly to person when added to the application. Living space can take a maximum of 4 while office can take 6.
 
 > **Note:** Office is available to Staff and Fellow
-> but Living space is available to only fellows
+> but Living space is available to only fellows who
 > choose to have one.
-
-This text you see here is *actually* written in Markdown! To get a feel for Markdown's syntax, type some text into the left window and watch the results in the right.
 
 ### Requirements
 
@@ -51,4 +49,13 @@ $ app.py print_room <room_name>
 $ app.py save_state [-b=SQLD]
 $ app.py load_state <db_path>
 
+```
+#options
+```sh
+option:
+   -help -h                               Geting help on using the program
+   -g RG, --rgender=RG                    To specify gender of Occupant of a living room
+   -w WA, --wants_accom=WA                An option argument to specify that person want accomodation
+   -o FN, --option=FN                     Optional file name when printing to file
+   -b SQLD --db=SQLD                      Database to load from the path provided
 ```
