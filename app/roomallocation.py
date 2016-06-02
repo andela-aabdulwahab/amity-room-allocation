@@ -250,7 +250,8 @@ class RoomAllocation():
                     office = rooms[office_allocation]
                     office.add_occupant(person)
             amity.add_person(person)
-
         for i in rooms:
             amity.add_room(rooms[i])
+
+        # update the amity object
         self.amity = amity

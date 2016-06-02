@@ -130,8 +130,8 @@ def relocate_person(person_identifier, new_room_name):
     roomallocation = load_state()
     try:
         roomallocation.rellocate_person(person_identifier, new_room_name)
-    except KeyError:
-        return "Invalid Id supplied"
+    except KeyError as err:
+        return "{}" .format(err)
     save_state(roomallocation)
     return "Person relocated to " + new_room_name
 
@@ -162,7 +162,7 @@ def print_room(room_name):
         return "Invalid room id supplied"
 
 
-def save_state_to_db(db_path=False):
+def save_state_to_db(db_path=None):
     if not db_path:
         db_path = "roomallocation.db"
     roomallocation = load_state()

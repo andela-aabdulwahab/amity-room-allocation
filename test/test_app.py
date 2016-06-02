@@ -161,7 +161,7 @@ class TestApp(unittest.TestCase):
     def test_relocate_room_two(self):
         self.reset_call()
         self.relocate_person('invalid')
-        expected_string = "Invalid Id supplied"
+        expected_string = "'Invalid Person Id provided'"
         self.assertEqual(self.capture_output(), expected_string)
 
     def test_print_allocation(self):
