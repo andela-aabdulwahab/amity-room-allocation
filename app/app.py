@@ -87,7 +87,7 @@ def add_person(args):
     if is_fellow and rooms.get('livingspace'):
         message += first_name + " allocated to Living Space " \
                               + rooms.get('livingspace') + "\n"
-    elif is_fellow:
+    elif is_fellow and args["--wants_accom"] == "Y":
         message += "No available Living Space to allocate " + first_name + "\n"
     return message
 
@@ -149,7 +149,7 @@ def print_unallocated(file_name=False):
     allocation = load_state()
     if file_name:
         allocation.rmprint.print_unallocated_to_file(file_name)
-        return "Allocation printed to" + file_name
+        return "Allocation printed to " + file_name
     else:
         return allocation.rmprint.build_unallocation_string()
 

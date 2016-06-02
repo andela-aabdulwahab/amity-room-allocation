@@ -50,7 +50,7 @@ $ app.py save_state [-b=SQLD]
 $ app.py load_state <db_path>
 
 ```
-#options
+## options
 ```sh
 option:
    -help -h                               Geting help on using the program
@@ -59,3 +59,6 @@ option:
    -o FN, --option=FN                     Optional file name when printing to file
    -b SQLD --db=SQLD                      Database to load from the path provided
 ```
+### Demonstration
+> demo video can be found at
+> [checkpoint_one_demo](https://asciinema.org/a/d77n1dvp8eqws4vpbx54577aa)
