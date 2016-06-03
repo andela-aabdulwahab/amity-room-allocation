@@ -31,7 +31,7 @@ class Person():
 		self.name = name
 		self.gender = gender
 		self.room_name = {}
-		self.identifier = self.generate_id()
+		self.identifier = Person.generate_id()
 
 	def is_allocated(self, room_type):
 		""" checks if person is allocated
@@ -43,7 +43,8 @@ class Person():
 		"""
 		return room_type in self.room_name
 
-	def generate_id(self):
+	@staticmethod
+	def generate_id():
 		''' Generate a unique Id for person using UUID4
 
 		return
@@ -57,6 +58,6 @@ class Person():
 			'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z')
 		set1 = random.sample(range(0, 62), 4)
 		random_id = random.choice(alpha_nums)
-		for i in set1:
-			random_id += alpha_nums[i]
+		for index in set1:
+			random_id += alpha_nums[index]
 		return random_id

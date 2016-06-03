@@ -17,7 +17,4 @@ class Fellow(Person):
 
     def wants_accomodation(self):
         """ return value base on the value of want_accom"""
-        if self.wants_accom == "Y":
-            return True
-        else:
-            return False
+        return self.wants_accom == "Y"

@@ -1,4 +1,5 @@
 from app.fellow import Fellow
+from app.amity import Amity
 
 class RoomAllocationPrint():
     """Formats and print data in to Amity
@@ -29,8 +30,8 @@ class RoomAllocationPrint():
         persons_string = "List of Persons with Id\n"
         for i in persons:
             person = persons[i]
-            persons_string += (person.name + " " + self
-                               .amity.person_type(person) + " " +
+            persons_string += (person.name + " " +
+                               Amity.get_person_type(person) + " " +
                                person.identifier + "\n")
         return persons_string
 
@@ -132,7 +133,7 @@ class RoomAllocationPrint():
         """
         room = self.amity.rooms[room_id]
         room_string = ""
-        room_type = self.amity.room_type(room)
+        room_type = Amity.get_room_type(room)
         room_string += "\n--" + room.name + "(" + room_type + ")--\n"
         persons = room.occupants
         for i in persons:
@@ -150,7 +151,7 @@ class RoomAllocationPrint():
         """
         name = person_obj.name.upper()
         want_accomodation = ""
-        person_type = self.amity.person_type(person_obj)
+        person_type = Amity.get_person_type(person_obj)
         if person_type == "fellow":
             want_accomodation = person_obj.wants_accom
         return (name + ' ' + person_type.upper() + ' ' +

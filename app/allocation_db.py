@@ -56,12 +56,12 @@ class AllocationDb():
             ''')
 
     def empty_tables(self):
-        """ Empty the presons and room table """
+        """Empty the presons and room table."""
         self.db.execute('''DELETE FROM roomallocation_persons;''')
         self.db.execute('''DELETE FROM roomallocation_rooms;''')
 
     def add_person(self, person_obj):
-        """ Extract data from the person object and save it into the database
+        """Extract data from the person object and save it into the database.
 
         Arguments
             person_object: Object to be save into the database

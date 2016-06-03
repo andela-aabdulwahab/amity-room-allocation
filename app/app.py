@@ -33,7 +33,6 @@ sys.path.insert(0, parentdir)
 
 from app.allocation_db import AllocationDb
 from app.amity import Amity
-from app.exceptions import PersonNotFellowError
 from app.fellow import Fellow
 from app.livingspace import LivingSpace
 from app.office import Office
@@ -96,11 +95,11 @@ def create_room(args):
     rooms = get_room_values(args)
     roomallocation = load_state()
     message = "Room(s) created with Id (type): \n"
-    for i in range(len(rooms)):
-        room_name = rooms[i][0]
-        room_type = rooms[i][1]
+    for i, room in enumerate(rooms):
+        room_name = room[0]
+        room_type = room[1]
         if room_type.lower() == "livingspace":
-            gender = rooms[i][2]
+            gender = room[2]
             room = LivingSpace(room_name, gender)
             status = roomallocation.create_room(room)
             if status:

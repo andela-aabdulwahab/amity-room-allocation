@@ -106,7 +106,8 @@ class Amity():
                 gender_livingspaces[i] = livingspaces[i]
         return gender_livingspaces
 
-    def room_type(self, room_obj):
+    @staticmethod
+    def get_room_type(room_obj):
         """ Return the type of a room
 
         Arguments:
@@ -123,7 +124,8 @@ class Amity():
         else:
             return None
 
-    def person_type(self, person_obj):
+    @staticmethod
+    def get_person_type(person_obj):
         """ Return the type of a person
 
         Arguments

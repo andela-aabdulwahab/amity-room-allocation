@@ -60,7 +60,9 @@ class TestApp(unittest.TestCase):
         self.args["--wants_accom"] = 'Y'
         self.args['add_person'] = True
 
-    def create_room(self, room_type, gender =[]):
+    def create_room(self, room_type, gender=None):
+        if not gender:
+            gender = []
         self.args['<room_name>'] = ['Mecury']
         self.args['<room_type>'] = [room_type]
         self.args['--rgender'] = gender
@@ -79,7 +81,7 @@ class TestApp(unittest.TestCase):
     def reset_call(self):
         self.args = {'create_room': False, 'add_person': False,
                      'relocate_person': False, 'print_allocation': False,
-                     'print_unallocated': False, 'print_room': False,
+                     'print_unallocated': False,
                      'load_state': False, 'print_room': False,
                      'save_state': False, 'delete_room': False,
                      'delete_person': False, 'print_persons': False}

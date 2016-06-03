@@ -70,7 +70,8 @@ class RoomAllocation():
             return [office_status, livingspace_status]
         return [office_status]
 
-    def select_random(self, adict):
+    @staticmethod
+    def select_random(adict):
         """Return a random member of the database provided.
 
         Arguments:
@@ -133,12 +134,12 @@ class RoomAllocation():
         i = 0
         while i <= no_of_rooms:
             i += 1
-            room_obj = self.select_random(room_dict)
+            room_obj = RoomAllocation.select_random(room_dict)
             if not room_obj.is_full():
                 break
             if i == no_of_rooms:
                 raise NoRoomError("No free room to allocate Person")
-        room_type = self.amity.room_type(room_obj)
+        room_type = Amity.get_room_type(room_obj)
         if person_obj.is_allocated(room_type):
             raise PersonAllocatedError
         else:
@@ -165,7 +166,7 @@ class RoomAllocation():
             new_room_obj = self.amity.rooms[new_room_id]
         except KeyError:
             raise KeyError("Invalid Room Id provided")
-        room_type = self.amity.room_type(new_room_obj)
+        room_type = Amity.get_room_type(new_room_obj)
         old_room_name = person_obj.room_name.get(room_type)
         if old_room_name:
             old_room_obj = self.amity.rooms[old_room_name]
@@ -182,7 +183,7 @@ class RoomAllocation():
 
         """
         room = self.amity.rooms[room_id]
-        room_type = self.amity.room_type(room)
+        room_type = Amity.get_room_type(room)
         persons = room.occupants
         for i in persons:
             person = persons[i]

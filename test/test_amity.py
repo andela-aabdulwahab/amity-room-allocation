@@ -90,20 +90,20 @@ class TestAmity(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.amity.persons = "malik wahab"
 
-    def test_room_type(self):
-        self.assertEqual(self.amity.room_type(self.livingA), 'livingspace')
+    def test_get_room_type(self):
+        self.assertEqual(Amity.get_room_type(self.livingA), 'livingspace')
 
-    def test_room_type_two(self):
-        self.assertEqual(self.amity.room_type(self.officeA), 'office')
+    def test_get_room_type_two(self):
+        self.assertEqual(Amity.get_room_type(self.officeA), 'office')
 
-    def test_room_type_thee(self):
-        self.assertIsNone(self.amity.room_type({}))
+    def test_get_room_type_thee(self):
+        self.assertIsNone(Amity.get_room_type({}))
 
-    def test_person_type(self):
-        self.assertEqual(self.amity.person_type(self.fellowA), 'fellow')
+    def test_get_person_type(self):
+        self.assertEqual(Amity.get_person_type(self.fellowA), 'fellow')
 
-    def test_person_type_two(self):
-        self.assertEqual(self.amity.person_type(self.staffB), 'staff')
+    def test_get_person_type_two(self):
+        self.assertEqual(Amity.get_person_type(self.staffB), 'staff')
 
-    def test_person_type_three(self):
-        self.assertIsNone(self.amity.person_type({}))
+    def test_get_person_type_three(self):
+        self.assertIsNone(Amity.get_person_type({}))
