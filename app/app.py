@@ -3,6 +3,7 @@
 usage:
     app.py create_room (<room_name> <room_type> [-g=RG])...
     app.py add_person <first_name> <last_name> <gender> <person_type> [-w=WA]
+    app.py load_people <file_name>
     app.py relocate_person <person_identifier> <new_room_name>
     app.py delete_room <room_name>
     app.py delete_person <person_id>
@@ -33,6 +34,7 @@ sys.path.insert(0, parentdir)
 
 from app.allocation_db import AllocationDb
 from app.amity import Amity
+from app.exceptions import RoomIsFullError
 from app.fellow import Fellow
 from app.livingspace import LivingSpace
 from app.office import Office
@@ -91,6 +93,13 @@ def add_person(args):
     return message
 
 
+def load_people(file_name):
+    roomallocation = load_state()
+    status = roomallocation.load_persons_from_text(file_name)
+    save_state(roomallocation)
+    return str(len(status)) + " added to Amity"
+
+
 def create_room(args):
     rooms = get_room_values(args)
     roomallocation = load_state()
@@ -131,6 +140,8 @@ def relocate_person(person_identifier, new_room_name):
         roomallocation.rellocate_person(person_identifier, new_room_name)
     except KeyError as err:
         return "{}" .format(err)
+    except RoomIsFullError as err:
+        return "{}".format(err)
     save_state(roomallocation)
     return "Person relocated to " + new_room_name
 
@@ -221,6 +232,8 @@ def main(args):
         print(add_person(args))
     elif args["create_room"]:
         print(create_room(args))
+    elif args["load_people"]:
+        print(load_people(args["<file_name>"]))
     elif args["relocate_person"]:
         person_identifier = args["<person_identifier>"]
         new_room_name = args["<new_room_name>"]
@@ -251,7 +264,7 @@ def main(args):
     elif args["print_persons"]:
         print(print_persons())
     else:
-        print("use the usage instruction below to build command")
+        print("use app.py --help to see usage")
 
 if __name__ == '__main__':
     args = docopt(__doc__)

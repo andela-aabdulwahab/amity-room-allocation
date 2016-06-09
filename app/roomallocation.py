@@ -4,6 +4,7 @@ from app.amity import Amity
 from app.exceptions import NoRoomError, PersonAllocatedError, SameNameRoomError
 from app.fellow import Fellow
 from app.roomallocation_print import RoomAllocationPrint
+from app.staff import Staff
 
 
 class RoomAllocation():
@@ -69,6 +70,41 @@ class RoomAllocation():
                 livingspace_status = False
             return [office_status, livingspace_status]
         return [office_status]
+
+    def load_persons_from_text(self, file_name):
+        """Load persons from file and add to Amity.
+
+        Arguments:
+            file_name: string, location to load txt
+
+        Return:
+            List: of the status for every line
+        """
+        with open(file_name, 'r') as f:
+            names = [x.strip('\n') for x in f.readlines()]
+        f.close()
+        status = []
+        for person_info in names:
+            person_obj = RoomAllocation.get_person_from_line(person_info)
+            status.append(self.create_person(person_obj))
+        return status
+
+    @staticmethod
+    def get_person_from_line(person_info):
+        """Create person object from the person info.
+
+        Arguments:
+            person_info: String Line of text containing person info
+
+        Returns:
+            Person: Type Fellow or Staff
+        """
+        person = person_info.split(' ')
+        name = person[0] + ' ' + person[1]
+        gender = person[2]
+        if person[3].lower() == 'fellow':
+            return Fellow(name, gender, person[4])
+        return Staff(name, gender)
 
     @staticmethod
     def select_random(adict):

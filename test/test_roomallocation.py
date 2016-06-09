@@ -131,6 +131,10 @@ class TestRoomAllocation(unittest.TestCase):
         with self.assertRaises(KeyError):
             self.roomallocation.remove_room('notthere')
 
+    def test_load_persons_from_text(self):
+        status = self.roomallocation.load_persons_from_text('names.txt')
+        self.assertNotEqual([], status)
+
     def test_select_random(self):
         a_dict = {"one": 1, "two": 2, "three": 3, "four": 4}
         random = self.roomallocation.select_random(a_dict)
