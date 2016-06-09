@@ -84,7 +84,7 @@ class TestApp(unittest.TestCase):
                      'print_unallocated': False,
                      'load_state': False, 'print_room': False,
                      'save_state': False, 'delete_room': False,
-                     'delete_person': False, 'print_persons': False}
+                     'delete_person': False, 'print_persons': False, 'load_people': False}
 
     def test_load_state(self):
         roomallocation = load_state()
@@ -278,5 +278,5 @@ class TestApp(unittest.TestCase):
 
     def test_main_no_args(self):
         self.reset_call()
-        expected_string = "use the usage instruction below to build command"
+        expected_string = "use app.py --help to see usage"
         self.assertEqual(self.capture_output(), expected_string)
