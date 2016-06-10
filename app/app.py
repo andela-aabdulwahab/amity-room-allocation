@@ -150,7 +150,7 @@ def print_allocation(file_name=False):
     allocation = load_state()
     if file_name:
         allocation.rmprint.print_allocation_to_file(file_name)
-        return "Unallocated printed to " + file_name
+        return "Application printed to " + file_name
     else:
         return allocation.rmprint.build_allocation_string()
 
@@ -159,7 +159,7 @@ def print_unallocated(file_name=False):
     allocation = load_state()
     if file_name:
         allocation.rmprint.print_unallocated_to_file(file_name)
-        return "Allocation printed to " + file_name
+        return "Unallocated printed to " + file_name
     else:
         return allocation.rmprint.build_unallocation_string()
 

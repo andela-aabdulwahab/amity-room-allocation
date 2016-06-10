@@ -92,7 +92,7 @@ class RoomAllocationPrint():
             String: Of formated list of persons info
 
         """
-        unallocated_string = "--Unallocated for {}-- \n\n" \
+        unallocated_string = "\n--Unallocated for {}-- \n" \
                              .format(unallocated_type)
         for person_id in unallocated_dict:
             unallocated_string += \
