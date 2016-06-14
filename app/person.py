@@ -45,10 +45,10 @@ class Person():
 
 	@staticmethod
 	def generate_id():
-		''' Generate a unique Id for person using UUID4
+		''' Generate a Id for person using
 
 		return
-		the first part of uuid4 generated
+			String: of 5 random AlphaNume
 
 		'''
 		alpha_nums = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
