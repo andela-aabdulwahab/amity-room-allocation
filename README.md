@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/andela-aabdulwahab/checkpoint_one.svg?branch=develop)](https://travis-ci.org/andela-aabdulwahab/checkpoint_one)
+[![Build Status](https://travis-ci.org/andela-aabdulwahab/amity-room-allocation.svg?branch=develop)](https://travis-ci.org/andela-aabdulwahab/amity-room-allocation)
 [![Coverage Status](https://coveralls.io/repos/github/andela-aabdulwahab/checkpoint_one/badge.svg?branch=develop)](https://coveralls.io/github/andela-aabdulwahab/checkpoint_one?branch=develop)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/andela-aabdulwahab/checkpoint_one/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/andela-aabdulwahab/checkpoint_one/?branch=develop)
 
