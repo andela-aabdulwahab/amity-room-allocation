@@ -2,9 +2,9 @@
 [![Coverage Status](https://coveralls.io/repos/github/andela-aabdulwahab/checkpoint_one/badge.svg?branch=develop)](https://coveralls.io/github/andela-aabdulwahab/checkpoint_one?branch=develop)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/andela-aabdulwahab/checkpoint_one/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/andela-aabdulwahab/checkpoint_one/?branch=develop)
 
-# Office Space Allocation App
+# Room Allocation Software
 
-Space Allocation app for managing living space and office space at one of Andela's facilities, Amity. Person added to the system can be a FELLOW or a STAFF and a room can be an Office or a Living Space.
+Room allocation software for managing living space and office space at one of Andela's facilities, Amity. Person added to the system can be a **fellow** or a **staff** and a room can be an **office** or a **living** Space.
 
 Rooms are allocated randomly to person when added to the application. Living space can take a maximum of 4 while office can take 6.
 
@@ -61,4 +61,4 @@ option:
 ```
 ### Demonstration
 > demo video can be found at
-> [checkpoint_one_demo](https://asciinema.org/a/d77n1dvp8eqws4vpbx54577aa)
+> [checkpoint_one_demo](https://asciinema.org/a/6oxp8ocmdx5qhc4c3v534dg94)
