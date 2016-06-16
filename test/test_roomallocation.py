@@ -3,7 +3,7 @@ import unittest
 
 from app.allocation_db import AllocationDb
 from app.amity import Amity
-from app.exceptions import NoRoomError, PersonAllocatedError
+from app.exceptions import NoRoomError, PersonAllocatedError, PersonInRoomError
 from app.fellow import Fellow
 from app.livingspace import LivingSpace
 from app.office import Office
@@ -82,15 +82,24 @@ class TestRoomAllocation(unittest.TestCase):
                                               {'spata': self.livingA})
 
     def test_rellocate_person(self):
+        livingB = LivingSpace("Black", "M")
         self.roomallocation.allocate_livingspace(self.personA.identifier)
         self.roomallocation.allocate_office(self.personA.identifier)
+        self.roomallocation.create_room(livingB)
         self.roomallocation.rellocate_person(self.personA.identifier,
-                                             self.officeB.get_id())
-        self.assertEqual("trafford", self.personA.room_name["office"])
+                                             livingB.get_id())
+        self.assertEqual("black", self.personA.room_name["livingspace"])
 
     def test_rellocate_person_four(self):
         with self.assertRaises(KeyError):
             self.roomallocation.rellocate_person(self.personA.identifier, 'om')
+
+    def test_rellocate_person_three(self):
+        self.roomallocation.allocate_livingspace(self.personA.identifier)
+        self.roomallocation.allocate_office(self.personA.identifier)
+        with self.assertRaises(PersonInRoomError):
+            self.roomallocation.rellocate_person(self.personA.identifier,
+            self.personA.room_name["office"])
 
     def test_rellocate_person_two(self):
         with self.assertRaises(KeyError):

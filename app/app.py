@@ -139,8 +139,10 @@ def relocate_person(person_identifier, new_room_name):
     try:
         roomallocation.rellocate_person(person_identifier, new_room_name)
     except KeyError as err:
-        return "{}" .format(err)
+        return "{}".format(err)
     except RoomIsFullError as err:
+        return "{}".format(err)
+    except PersonInRoomError as err:
         return "{}".format(err)
     save_state(roomallocation)
     return "Person relocated to " + new_room_name

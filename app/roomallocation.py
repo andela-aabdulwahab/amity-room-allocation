@@ -1,7 +1,7 @@
 import random
 
 from app.amity import Amity
-from app.exceptions import NoRoomError, PersonAllocatedError, SameNameRoomError
+from app.exceptions import *
 from app.fellow import Fellow
 from app.roomallocation_print import RoomAllocationPrint
 from app.staff import Staff
@@ -204,11 +204,15 @@ class RoomAllocation():
             raise KeyError("Invalid Room Id provided")
         room_type = Amity.get_room_type(new_room_obj)
         old_room_name = person_obj.room_name.get(room_type)
-        if old_room_name:
-            old_room_obj = self.amity.rooms[old_room_name]
-            del old_room_obj.occupants[person_obj.identifier]
-        new_room_obj.add_occupant(person_obj)
-        person_obj.room_name[room_type] = new_room_obj.get_id()
+        try:
+            new_room_obj.add_occupant(person_obj)
+        except (RoomIsFullError, PersonInRoomError) as err:
+            raise err
+        else:
+            if old_room_name:
+                old_room_obj = self.amity.rooms[old_room_name]
+                del old_room_obj.occupants[person_obj.identifier]
+            person_obj.room_name[room_type] = new_room_obj.get_id()
 
     def remove_room(self, room_id):
         """Remove a specified room from amity
