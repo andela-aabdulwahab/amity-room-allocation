@@ -77,20 +77,7 @@ class Amity():
                 offices[i] = self._rooms[i]
         return offices
 
-    def get_all_livingspaces(self):
-        """Get all rooms use checking for instance to
-        select lving room.
-
-        Returns:
-            livingspace: Rooms of type LivingSpace
-        """
-        livingspaces = {}
-        for i in self._rooms:
-            if isinstance(self._rooms[i], LivingSpace):
-                livingspaces[i] = self._rooms[i]
-        return livingspaces
-
-    def get_livingspaces(self, gender):
+    def get_livingspaces(self, gender=None):
         """Gets all the living sapces in _room
 
         Arguments:
@@ -99,8 +86,13 @@ class Amity():
         Returns:
             gender_livingspaces: Rooms of the gender specify
         """
+        livingspaces = {}
+        for i in self._rooms:
+            if isinstance(self._rooms[i], LivingSpace):
+                livingspaces[i] = self._rooms[i]
+        if not gender:
+            return livingspaces
         gender_livingspaces = {}
-        livingspaces = self.get_all_livingspaces()
         for i in livingspaces:
             if livingspaces[i].gender == gender:
                 gender_livingspaces[i] = livingspaces[i]

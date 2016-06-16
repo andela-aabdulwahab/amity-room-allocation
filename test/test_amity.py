@@ -80,7 +80,7 @@ class TestAmity(unittest.TestCase):
         self.amity.rooms = self.officeB
         self.amity.rooms = self.livingA
         living_dict = {"spata": self.livingA, "roses": self.livingB}
-        self.assertEqual(living_dict, self.amity.get_all_livingspaces())
+        self.assertEqual(living_dict, self.amity.get_livingspaces())
 
     def test_add_person(self):
         self.amity.persons = self.fellowA
