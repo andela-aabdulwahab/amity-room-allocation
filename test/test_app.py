@@ -273,7 +273,6 @@ class TestApp(unittest.TestCase):
         self.reset_call()
         self.args['load_state'] = True
         self.args["<db_path>"] = 'roomallocation.db'
-        os.remove('roomallocation.db')
         expected_string = "Application State reload from database"
         self.assertEqual(self.capture_output(), expected_string)
 
