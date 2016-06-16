@@ -39,8 +39,8 @@ class AllocationDb():
             name VARCHAR(50) NOT NULL,
             gender CHARACTER(1) NOT NULL,
             want_accomodation CHARACTER(1) NOT NULL,
-            office_id VARCHAR(20) NULL,
-            livingroom_id VARCHAR(20) NULL
+            office_id INTEGER NULL,
+            livingspace_id INTEGER NULL
             );
             ''')
 
@@ -55,11 +55,6 @@ class AllocationDb():
             );
             ''')
 
-    def empty_tables(self):
-        """Empty the presons and room table."""
-        self.db.execute('''DELETE FROM roomallocation_persons;''')
-        self.db.execute('''DELETE FROM roomallocation_rooms;''')
-
     def add_person(self, person_obj):
         """Extract data from the person object and save it into the database.
 
@@ -71,24 +66,28 @@ class AllocationDb():
         name = person_obj.name
         gender = person_obj.gender
         office_id = ""
-        livingroom_id = ""
+        livingspace_id = ""
         want_accomodation = ""
 
         if person_obj.is_allocated("office"):
-                office_id = person_obj.room_name["office"]
+                office_id = self.get_db_room_id(person_obj.room_name["office"])
         if isinstance(person_obj, Fellow):
             person_type = "FELLOW"
             want_accomodation = person_obj.wants_accom
             if person_obj.is_allocated("livingspace"):
-                livingroom_id = person_obj.room_name["livingspace"]
+                livingspace_id = self.get_db_room_id(
+                person_obj.room_name["livingspace"])
         else:
             person_type = "STAFF"
+        if self.person_in_database(person_id):
+            self.update_person((office_id, livingspace_id, person_id))
+            return self
         values = (person_id, person_type, name, gender, want_accomodation,
-                  office_id, livingroom_id)
+                  office_id, livingspace_id)
 
         self.db.execute("INSERT INTO roomallocation_persons(person_id, " +
                         "person_type, name, gender, want_accomodation, " +
-                        "office_id, livingroom_id) VALUES(?, ?, ?, ?, " +
+                        "office_id, livingspace_id) VALUES(?, ?, ?, ?, " +
                         "?, ?, ?)", values)
         self.db.commit()
         return self
@@ -109,13 +108,47 @@ class AllocationDb():
             room_type = "livingspace"
             gender = room_obj.gender
         values = (room_id, room_type, name, gender)
-        (self.db.execute("INSERT INTO roomallocation_rooms(room_id, room" +
-                         "_type, name, gender) VALUES(?, ?, ?, ?)", values))
+        if not self.room_in_database(room_id):
+            (self.db.execute("INSERT INTO roomallocation_rooms(room_id, room" +
+                             "_type, name, gender) VALUES(?, ?, ?, ?)", values))
+            self.db.commit()
+        return self
+
+    def room_in_database(self, room_id):
+        result = self.cursor.execute("SELECT * FROM roomallocation_rooms WHERE "
+                                     +"room_id ='"+room_id+"'")
+        row = result.fetchall()
+        return len(row) == 1
+
+    def person_in_database(self, person_id):
+        result = self.cursor.execute("SELECT * FROM roomallocation_persons "
+                                     +"WHERE person_id ='"+person_id+"'")
+        row = result.fetchall()
+        return len(row) == 1
+
+    def update_person(self, values):
+        result = self.cursor.execute("UPDATE roomallocation_persons SET "+
+                                     "office_id = ?, livingspace_id = ? WHERE "+
+                                     "person_id = ?", values)
         self.db.commit()
         return self
 
+    def get_db_room_id(self, room_id):
+        result = self.cursor.execute("SELECT id FROM roomallocation_rooms WHERE"
+                                     +" room_id ='"+room_id+"'")
+        row = result.fetchone()
+        if row:
+            return row[0]
+        return ""
+
+    def get_room_id(self, db_id):
+        result = self.cursor.execute("SELECT room_id FROM roomallocation_rooms "
+                                     +"WHERE id ='"+str(db_id)+"'")
+        row = result.fetchone()
+        return row[0]
+
     def get_rooms(self):
-        """ return all rooms in the database
+        """Return all rooms in the database.
 
         Returns:
             Dict: a dictionary of Room objects
@@ -143,12 +176,13 @@ class AllocationDb():
             if row[2] == "FELLOW":
                 person = Fellow(row[3], row[4], row[5])
                 if row[6] != "":
-                    person.room_name["office"] = row[6]
+                    person.room_name["office"] = self.get_room_id(row[6])
                 if row[7] != "":
-                    person.room_name["livingspace"] = row[7]
+                    person.room_name["livingspace"] = self.get_room_id(row[7])
             elif row[2] == "STAFF":
                 person = Staff(row[3], row[4])
-                person.room_name["office"] = row[6]
+                if row[6] != "":
+                    person.room_name["office"] = self.get_room_id(row[6])
             person.identifier = row[1]
             persons[row[1]] = person
         return persons

@@ -255,13 +255,12 @@ class RoomAllocation():
         Arguments:
             allocation_db_obj: database connection to be use to save data
         """
-        allocation_db_obj.empty_tables()
         persons = self.amity.persons
         rooms = self.amity.rooms
-        for i in persons:
-            allocation_db_obj.add_person(persons[i])
         for i in rooms:
             allocation_db_obj.add_room(rooms[i])
+        for i in persons:
+            allocation_db_obj.add_person(persons[i])
 
     def load_from_database(self, allocation_db_obj):
         """Load database information to create a new application state
